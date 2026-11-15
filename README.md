@@ -71,6 +71,10 @@ Android: otvoriti [android/](android/) u Android Studiju, instalirati odgovaraju
 
 © 2026 BRENDIGO · [Komercijalni EULA — nacrt](LICENSE-COMMERCIAL.txt) · [Povijesni MIT uvjeti](LICENSES/previous-MIT.txt)
 
+## Windows DEMO bez licencnog ključa
+
+Svako novo izdanje također uključuje **Clanarina-Demo-Setup.exe** i **Clanarina-Demo-Portable.exe**. Demo je samostalno kompajlirana varijanta `ClanarinaDemo.exe` s trajnom lokalnom bazom `LocalAppData/ClanarinaDemo/data`, potpuno odvojeno od podataka pune aplikacije. Pri prvom pokretanju generira **24 izmišljena člana**, grupe, tri razdoblja članarina i izmišljene uplate, dugovanja i preplate. Ne traži licencni ključ i jasno prikazuje oznaku DEMO. Demo nije prikladan za obradu stvarnih osobnih i financijskih podataka.
+
 ## Isporuka svakog izdanja
 
 GitHub automatizacija izrađuje stvarne APK, AAB, Portable.exe, Setup.exe i ZIP arhive potpunog izvornog koda i weba. Uvjet objave je uspješan build **svih** platformi; ne objavljuju se prazne datoteke. Bez tajni za trajni Android ključ potpis se radi privremenim **testnim** ključem i rezultat je isključivo pre-release. Windows instalacijski čarobnjak koristi NSIS Modern UI 2 i prikazuje komercijalni EULA nacrt. Windows Portable.exe sam raspakira potrebne WinUI/.NET datoteke u privremeni direktorij — bez klasične instalacije. Potpisivanje Windows Authenticode certifikatom još treba konfigurirati.

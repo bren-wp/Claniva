@@ -1,6 +1,6 @@
 # Vizualni QA — Članarina
 
-Manifest pokriva 40 ekrana, dvije nativne aplikacije i pet obveznih stanja (zadano, prazno, popunjeno, validacijska pogreška, dijalog): 400 pojedinačnih provjera. Sve su zasad označene **unverified** jer stvarne referentne snimke svakog ekrana još nisu dostupne. SVG marketinške ilustracije nisu prihvatljive kao dokaz pixel-perfect rezultata.
+Manifest pokriva 40 ekrana, Windows, Android i zasebnu Windows DEMO izvedbu i pet obveznih stanja (zadano, prazno, popunjeno, validacijska pogreška, dijalog): 600 pojedinačnih provjera. Sve su zasad označene **unverified** jer stvarne referentne snimke svakog ekrana još nisu dostupne. SVG marketinške ilustracije nisu prihvatljive kao dokaz pixel-perfect rezultata.
 
 Za svaku kombinaciju potrebni su stvarni screenshot i odobren referentni PNG istih dimenzija, OS-a, DPI-ja, jezika, theme i font scale. Datoteke su na putanjama qa/baselines/{platform}/{screen}/{state}.png i qa/captures/... .
 
@@ -11,3 +11,5 @@ Potpuna provjera: python3 scripts/visual_audit.py --audit-all (mora pasti ako bi
 Provjera konkretnih slika: python3 scripts/visual_audit.py --reference ref.png --actual capture.png --diff diff.png
 
 Potreban je Python Pillow paket za obradu PNG slika. Kod ne mijenja reference niti izmišlja rezultate. Dizajn na desktopu i mobitelu ima zasebne odobrene reference: identičnost značajki i stilova ne znači isti fizički raspored na različitim veličinama zaslona.
+
+Demo je treći profil sa zasebnim referencama za svaki zaslon i stanje, jer sadrži DEMO oznaku i izmišljene podatke. Nije dopušteno koristiti screenshot pune aplikacije kao referencu za Demo.

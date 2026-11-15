@@ -23,3 +23,7 @@ Za svaki ekran i stanje (normalno, prazno, validacijska greška, popunjeno, moda
 6. blokirati izdanje dok kritični zasloni ne prođu dogovorene pragove.
 
 **Status:** SVG datoteke branding/preview-*.svg su konceptualne ilustracije, a ne potvrđene snimke izvršavanja. Projekt još nema empirijski potvrđen 1:1 rezultat. Evidencija se vodi u qa/screen-matrix.csv.
+
+## Windows Demo
+
+Za svaki Windows ekran DEMO mora imati zasebnu referentnu PNG sliku, jasno vidljivu DEMO oznaku, izmišljene članove i uplate te raditi bez ključa. Popis izvora mora zasebno razlikovati Windows full i Windows demo. Trenutačna matrica pokriva 600 kombinacija (40 ekrana × 5 stanja × 3 varijante). One su nedokazane sve dok stvarni screenshotovi ne prođu usporedbu.

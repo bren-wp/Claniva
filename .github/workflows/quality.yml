@@ -18,6 +18,8 @@ jobs:
       - name: Verify exact pixel comparator rejects modified images
         run: |
           python3 scripts/test_visual_audit.py
+      - name: Check demo isolation and required release artifacts
+        run: python3 scripts/test_demo_rules.py
   php-licensing:
     runs-on: ubuntu-latest
     steps:
