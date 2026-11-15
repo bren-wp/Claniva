@@ -1,0 +1,670 @@
+{
+  "schemaVersion": 1,
+  "product": "Članarina",
+  "intent": "Strict pixel-perfect acceptance; actual captures mandatory",
+  "referencePolicy": "Platform-, device-, OS-, theme- and state-specific approved baselines",
+  "thresholds": {
+    "maxDifferentPixels": 0,
+    "maxAbsoluteChannelError": 0
+  },
+  "profiles": {
+    "windows": {
+      "width": 1440,
+      "height": 900,
+      "scale": 1,
+      "theme": "light",
+      "locale": "hr-HR",
+      "fontScale": 1
+    },
+    "android": {
+      "width": 1080,
+      "height": 2400,
+      "density": 3,
+      "theme": "light",
+      "locale": "hr-HR",
+      "fontScale": 1
+    }
+  },
+  "screens": [
+    {
+      "id": "launch",
+      "label": "Pokretanje",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "onboarding",
+      "label": "Prvo pokretanje",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "activation-select",
+      "label": "Odabir aktivacije",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "activation-online",
+      "label": "Online aktivacija",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "activation-request",
+      "label": "Offline zahtjev",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "activation-import",
+      "label": "Uvoz licence",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "activation-status",
+      "label": "Status licence",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "organization-new",
+      "label": "Nova organizacija",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "dashboard",
+      "label": "Nadzorna ploča",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "organization-switch",
+      "label": "Odabir organizacije",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "members",
+      "label": "Članovi",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "member-new",
+      "label": "Novi član",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "member-edit",
+      "label": "Uređivanje člana",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "member-details",
+      "label": "Detalji člana",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "guardians",
+      "label": "Kontakti i skrbnici",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "groups",
+      "label": "Grupe",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "membership-plans",
+      "label": "Planovi članarina",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "plan-edit",
+      "label": "Nova/uredi članarinu",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "charges",
+      "label": "Zaduženja",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "payments",
+      "label": "Uplate",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "payment-new",
+      "label": "Nova uplata",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "payment-details",
+      "label": "Detalji uplate",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "debts",
+      "label": "Dugovanja",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "payment-slips",
+      "label": "HUB-3 uplatnice",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "epc-qr",
+      "label": "EPC QR",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "bank-statements",
+      "label": "Bankovni izvodi",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "bank-import",
+      "label": "Uvoz izvoda",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "bank-reconciliation",
+      "label": "Usklađivanje uplata",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "reports",
+      "label": "Izvještaji",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "reports-export",
+      "label": "Izvoz izvještaja",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "reminders",
+      "label": "Podsjetnici",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "settings",
+      "label": "Postavke",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "security",
+      "label": "PIN i biometrija",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "backups",
+      "label": "Sigurnosne kopije",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "data-import",
+      "label": "Uvoz podataka",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "data-export",
+      "label": "Izvoz podataka",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "audit-log",
+      "label": "Dnevnik promjena",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "data-delete",
+      "label": "Brisanje podataka",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "help",
+      "label": "Pomoć",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    },
+    {
+      "id": "about",
+      "label": "Informacije o aplikaciji",
+      "states": [
+        "default",
+        "empty",
+        "populated",
+        "validation-error",
+        "dialog"
+      ],
+      "platforms": [
+        "windows",
+        "android"
+      ],
+      "status": "unverified"
+    }
+  ]
+}

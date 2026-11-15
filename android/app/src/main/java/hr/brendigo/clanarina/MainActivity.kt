@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import hr.brendigo.clanarina.data.LocalStore
 import hr.brendigo.clanarina.data.Member
 import hr.brendigo.clanarina.ui.Brand
@@ -50,7 +51,13 @@ class MainActivity:ComponentActivity() {
     val totals=remember(changes) { db.totals() }
     Scaffold(
         topBar={ TopAppBar(
-            title={ Text("Članarina",fontWeight=FontWeight.Bold) },
+            title={
+                Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(10.dp)) {
+                    Image(painter=painterResource(id=R.drawable.brand_foreground),contentDescription="Logotip Članarina",
+                        modifier=Modifier.size(35.dp))
+                    Text("Članarina",fontWeight=FontWeight.Bold)
+                }
+            },
             actions={
                 Box {
                     TextButton(onClick={menu=true}) { Text("Moduli",color=Color.White) }

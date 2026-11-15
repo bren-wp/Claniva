@@ -6,6 +6,8 @@
   <img src="branding/hero.svg" width="100%" alt="Članarina — ilustracija proizvoda"/>
 </div>
 
+> **Preuzimanja:** [GitHub Releases](https://github.com/bren-wp/Claniva/releases) · [Pravila isporuke](docs/RELEASE_POLICY.md) · APK, AAB, Portable.exe, Setup.exe, cijeli izvorni kod i web izvorni kod. Razvojna izdanja nisu produkcijska.
+
 > **Razvojna faza:** početna implementacija. Članarina nije još izdana kao produkcijska aplikacija; snimke i prikazi u README-u su **dizajnerski koncepti**, ne dokazi funkcionalnosti.
 
 ## Zašto Članarina?
@@ -67,4 +69,10 @@ Android: otvoriti [android/](android/) u Android Studiju, instalirati odgovaraju
 - [ ] Produkcijski potpisani installer, APK i AAB
 - [ ] Play Console provjere politike prodaje/aktivacije
 
-© 2026 BRENDIGO · [MIT License](LICENSE)
+© 2026 BRENDIGO · [Komercijalni EULA — nacrt](LICENSE-COMMERCIAL.txt) · [Povijesni MIT uvjeti](LICENSES/previous-MIT.txt)
+
+## Isporuka svakog izdanja
+
+GitHub automatizacija izrađuje stvarne APK, AAB, Portable.exe, Setup.exe i ZIP arhive potpunog izvornog koda i weba. Uvjet objave je uspješan build **svih** platformi; ne objavljuju se prazne datoteke. Bez tajni za trajni Android ključ potpis se radi privremenim **testnim** ključem i rezultat je isključivo pre-release. Windows instalacijski čarobnjak koristi NSIS Modern UI 2 i prikazuje komercijalni EULA nacrt. Windows Portable.exe sam raspakira potrebne WinUI/.NET datoteke u privremeni direktorij — bez klasične instalacije. Potpisivanje Windows Authenticode certifikatom još treba konfigurirati.
+
+Nativni Windows koristi WinUI 3 (bez WebView2/Tauri). [Službeni status razvoja](docs/RELEASE_POLICY.md).

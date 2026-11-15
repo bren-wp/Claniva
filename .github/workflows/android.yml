@@ -1,8 +1,10 @@
-name: Android — debug build
+name: Android — stable toolchain CI
 on:
   push:
     branches: [main, feat/**]
   pull_request:
+permissions:
+  contents: read
 jobs:
   android:
     runs-on: ubuntu-latest
@@ -14,12 +16,12 @@ jobs:
           java-version: '17'
       - uses: android-actions/setup-android@v3
         with:
-          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          packages: 'platform-tools platforms;android-37.0 build-tools;36.0.0'
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.13'
-      - name: Assemble Android debug (unsigned release not published)
-        run: gradle -p android :app:assembleDebug --stacktrace
+          gradle-version: '9.9.1'
+      - name: Assemble Android debug
+        run: gradle -p android :app:assembleDebug --stacktrace --no-daemon
       - uses: actions/upload-artifact@v4
         if: success()
         with:

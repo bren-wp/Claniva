@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <UseWinUI>true</UseWinUI>
     <WindowsPackageType>None</WindowsPackageType>
@@ -10,10 +10,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Claniva</RootNamespace>
     <AssemblyName>Clanarina</AssemblyName>
+    <Version Condition="'$(Version)' == ''">0.2.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260921001" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0" />
     <Content Include="Assets\BrandIcon.svg" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,43 @@
+ČLANARINA — KOMERCIJALNA LICENCA ZA SOFTVER I IZVORNI KOD
+Radni predložak v1 — 15. studenoga 2026.
+Nositelj prava: BRENDIGO (Davatelj licence).
+
+1. KORIŠTENJE
+Kupcu s valjanom licencom daje se ograničeno, neisključivo i neprenosivo pravo
+instalacije i korištenja proizvoda za vlastite interne potrebe, u okviru
+ugovorenog broja uređaja, trajanja i paketa. Sam primitak izvornog koda ne
+znači pravo preprodaje ili sublicenciranja.
+
+2. IZVORNI KOD
+Za verzije zakonito isporučene pod ovim uvjetima izvorni kod smije se pregledavati
+i prilagođavati za interne potrebe. Javno objavljivanje, preprodaja, objava
+modificiranih izdanja ili distribucija trećima traže pisano dopuštenje
+Davatelja licence, osim kada drugi zakon ili prethodno dodijeljena licenca daje
+takvo pravo.
+
+3. LICENCE TREĆIH STRANA
+Prava i uvjeti za samostalne biblioteke, frameworkove i njihove ovisnosti
+ostaju nepromijenjeni. Obvezne copyright i license napomene moraju ostati
+uključene u distribuciju.
+
+4. RANIJE MIT VERZIJE
+Ranije verzije izdane pod MIT licencom i dalje ostaju pod MIT uvjetima. Ovaj
+dokument ne opoziva već odobrena prava. Povijesni MIT tekst je u datoteci
+LICENSES/previous-MIT.txt.
+
+5. LICENCIRANJE I PRIVATNOST
+Aplikacije koriste lokalne poslovne podatke. Online aktivacija može obrađivati
+ograničene tehničke identifikatore u skladu s pravilima privatnosti. Offline
+aktivacija može koristiti potpisane datoteke.
+
+6. ODGOVORNOST I PRAVO
+Razvojna izdanja nisu prikladna za produkcijsku evidenciju stvarnih članova i
+financija. Sve ugovorne i zakonske obveze uključujući neisključiva prava
+potrošača određuju se mjerodavnim obveznim pravom i posebnim ugovorom.
+Ovaj nacrt ne zamjenjuje pravno provjerene komercijalne uvjete.
+
+7. NAPOMENA PRIJE JAVNE PRODAJE
+Potrebno je potvrditi pravni identitet davatelja licence, OIB, adresu,
+kontakt, cijene, trajanja, sigurnost i usklađenost pravila prije prodaje.
+
+(c) 2026 BRENDIGO. Sva prava pridržana osim prethodno odobrenih prava.
