@@ -12,10 +12,13 @@ object Brand {
     val Background = Color(0xFFF5F7FB)
     val Danger = Color(0xFFD63C43)
     val Ink = Color(0xFF17243A)
+    val Muted = Color(0xFF64748B)
+    val Stroke = Color(0xFFDCE5F0)
 }
 private val colors = lightColorScheme(
     primary=Brand.Blue, secondary=Brand.Teal, background=Brand.Background,
     surface=Color.White, onSurface=Brand.Ink, onBackground=Brand.Ink,
+    onPrimary=Color.White, onSecondary=Brand.Navy,
     error=Brand.Danger
 )
 @Composable fun ClanarinaTheme(content: @Composable () -> Unit) {
