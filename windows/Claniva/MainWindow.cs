@@ -60,8 +60,8 @@ public sealed partial class MainWindow : Window
         Navigation = new NavigationView
         {
             PaneDisplayMode = NavigationViewPaneDisplayMode.Auto,
-            CompactModeThresholdWidth = 720,
-            ExpandedModeThresholdWidth = 1120,
+            CompactModeThresholdWidth = 660,
+            ExpandedModeThresholdWidth = 900,
             OpenPaneLength = 236,
             CompactPaneLength = 48,
             IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed,
@@ -103,12 +103,19 @@ public sealed partial class MainWindow : Window
             ("license", "Licenca"),
             ("settings", "Postavke")
         })
-            Navigation.MenuItems.Add(new NavigationViewItem
+        {
+            var item = new NavigationViewItem
             {
-                Tag = tag, Content = name,
+                Tag = tag,
+                Content = name,
+                Icon = NavigationIcon(tag),
                 Foreground = new SolidColorBrush(BrandPalette.White),
                 MinHeight = 44
-            });
+            };
+            // Compact mode needs recognizable native icons, not truncated labels.
+            ToolTipService.SetToolTip(item, name);
+            Navigation.MenuItems.Add(item);
+        }
 
         PageContent = new StackPanel
         {
@@ -131,6 +138,28 @@ public sealed partial class MainWindow : Window
         host.Children.Add(Navigation);
         Content = host;
     }
+
+    private static FontIcon NavigationIcon(string tag) => new()
+    {
+        // Segoe MDL2 Assets is available offline on Windows 10 and 11.
+        // Every navigation entry has an icon so the Compact pane remains usable.
+        FontFamily = new FontFamily("Segoe MDL2 Assets"),
+        FontSize = 18,
+        Glyph = tag switch
+        {
+            "dashboard" => "\uE80F", // Home
+            "members" => "\uE716", // People
+            "dues" => "\uE8D4", // Payment
+            "payments" => "\uE8F1", // Cash
+            "debts" => "\uE783", // Warning
+            "slips" => "\uE8A5", // Document
+            "bank" => "\uE80B", // World / bank records
+            "reports" => "\uE9D9", // Analytics
+            "license" => "\uE8D7", // Lock
+            "settings" => "\uE713", // Settings
+            _ => "\uE10F"
+        }
+    };
 
     private void ApplyNavigationColors()
     {

@@ -33,6 +33,12 @@ for key in ["NavigationViewExpandedPaneBackground", "NavigationViewDefaultPaneBa
     assert key in win, f"Missing navigation theme resource {key}"
 assert 'Background = new SolidColorBrush(BrandPalette.Background)' in win
 assert 'Navigation.SelectedItem = navigationItem' in win
+assert 'ExpandedModeThresholdWidth = 900' in win
+assert 'CompactModeThresholdWidth = 660' in win
+assert 'Icon = NavigationIcon(tag)' in win and 'ToolTipService.SetToolTip(item, name)' in win
+assert 'new Thickness(14, 62, 14, 24)' in views, "Minimal nav header must not overlap DEMO/banner"
+assert 'private static FontIcon NavigationIcon' in win
+
 assert 'shortcuts.Children.Add(Action("Novo zaduženje", AddCharge_Click))' in views
 assert 'shortcuts.Children.Add(Action("Nova uplata", AddPayment_Click))' in views
 assert "members.Take(_visibleMembers)" in (r/"windows/Claniva/MainWindow.Members.cs").read_text(encoding="utf-8")
