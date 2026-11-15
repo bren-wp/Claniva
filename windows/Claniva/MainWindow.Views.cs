@@ -37,9 +37,9 @@ public sealed partial class MainWindow
         var heading = Text(titles.GetValueOrDefault(_module, "Članarina"), 30, true);
         heading.Foreground = new SolidColorBrush(BrandPalette.Navy);
         PageContent.Children.Add(heading);
-        var summary = _store.Totals();
         if (_module is "dashboard" or "reports")
         {
+            var summary = _store.Totals();
             var metrics = new Grid { ColumnSpacing = 12, RowSpacing = 12 };
             var columnCount = DashboardColumns();
             _lastLayoutColumns = columnCount;

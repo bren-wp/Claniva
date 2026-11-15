@@ -1,6 +1,8 @@
 package hr.brendigo.clanarina
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -90,13 +92,25 @@ import java.util.Locale
 }
 
 @Composable private fun LedgerItem(item: LedgerEntry) {
-    Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Column(Modifier.fillMaxWidth().padding(15.dp)) {
-            Text(item.memberName, fontWeight = FontWeight.Bold)
-            Text(euroAmount(item.amountCents), style = MaterialTheme.typography.titleMedium)
+    Card(
+        modifier=Modifier.fillMaxWidth(),
+        shape=RoundedCornerShape(16.dp),
+        border=BorderStroke(1.dp,Brand.Stroke),
+        colors=CardDefaults.cardColors(containerColor=Color.White)
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement=Arrangement.spacedBy(6.dp)
+        ) {
+            Text(item.memberName,color=Brand.Navy,fontWeight=FontWeight.Bold,
+                style=MaterialTheme.typography.titleMedium)
+            Text(euroAmount(item.amountCents),color=Brand.Ink,
+                fontWeight=FontWeight.Bold,style=MaterialTheme.typography.titleLarge)
             Text((if (item.kind == "charge") "Razdoblje: " else "Referenca: ") +
-                item.extra.ifBlank { "Nije navedeno" })
-            Text(item.createdAt, style = MaterialTheme.typography.bodySmall)
+                item.extra.ifBlank { "Nije navedeno" },
+                color=Brand.Ink,style=MaterialTheme.typography.bodyMedium)
+            Text(item.createdAt,color=Brand.Muted,
+                style=MaterialTheme.typography.bodySmall)
         }
     }
 }

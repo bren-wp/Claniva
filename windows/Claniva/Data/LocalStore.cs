@@ -26,6 +26,11 @@ public sealed partial class LocalStore
             Mode = SqliteOpenMode.ReadWriteCreate
         }.ToString();
         using var db = Connect();
+        using (var journal = db.CreateCommand())
+        {
+            journal.CommandText = "PRAGMA journal_mode=WAL;";
+            journal.ExecuteNonQuery();
+        }
         using var tx = db.BeginTransaction();
         Execute(db, tx, """
             CREATE TABLE IF NOT EXISTS members (
@@ -68,7 +73,9 @@ public sealed partial class LocalStore
         var db = new SqliteConnection(_connectionString);
         db.Open();
         using var pragma = db.CreateCommand();
-        pragma.CommandText = "PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL;";
+        // Opening a read-only screen should never renegotiate the WAL journal mode.
+        // Busy timeout avoids sporadic SQLITE_BUSY errors on quick successive edits.
+        pragma.CommandText = "PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;";
         pragma.ExecuteNonQuery();
         return db;
     }
