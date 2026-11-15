@@ -31,7 +31,7 @@ internal static class StartupDiagnostics
             // XAML parser details are useful for diagnosing HRESULT 0x802B000A.
             // Never add arbitrary user-entered strings to this log.
             var parserDetail = stage.Contains("xaml", StringComparison.OrdinalIgnoreCase)
-                ? ex.Message.Replace('\\r', ' ').Replace('\\n', ' ')
+                ? ex.Message.Replace('\r', ' ').Replace('\n', ' ')
                 : string.Empty;
             if (parserDetail.Length > 420) parserDetail = parserDetail[..420];
             var text = $"{DateTimeOffset.Now:O} stage={stage} type={ex.GetType().FullName} hresult=0x{ex.HResult:X8} detail={parserDetail}{Environment.NewLine}";
