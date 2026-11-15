@@ -20,10 +20,10 @@ data class Member(
     val creditCents: Long get() = (-balanceCents).coerceAtLeast(0)
 }
 
-data class Totals(val members: Int, val chargedCents: Long, val paidCents: Long) {
-    val outstandingCents: Long get() = (chargedCents - paidCents).coerceAtLeast(0)
-    val creditCents: Long get() = (paidCents - chargedCents).coerceAtLeast(0)
-}
+data class Totals(
+    val members: Int, val chargedCents: Long, val paidCents: Long,
+    val outstandingCents: Long, val creditCents: Long
+)
 
 data class LedgerEntry(
     val id: String,
@@ -192,6 +192,9 @@ class LocalStore(context: Context) : SQLiteOpenHelper(context, "clanarina.db", n
 
     @Synchronized fun totals(): Totals {
         val all = listMembers()
-        return Totals(all.size, all.sumOf { it.dueCents }, all.sumOf { it.paidCents })
+        return Totals(
+            all.size, all.sumOf { it.dueCents }, all.sumOf { it.paidCents },
+            all.sumOf { it.debtCents }, all.sumOf { it.creditCents }
+        )
     }
 }

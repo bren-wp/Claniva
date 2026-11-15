@@ -12,11 +12,9 @@ public record Member(
     public long CreditCents => Math.Max(0, -BalanceCents);
 }
 
-public record Summary(int Members, long ChargedCents, long PaidCents)
-{
-    public long OutstandingCents => Math.Max(0, ChargedCents - PaidCents);
-    public long CreditCents => Math.Max(0, PaidCents - ChargedCents);
-}
+public record Summary(
+    int Members, long ChargedCents, long PaidCents,
+    long OutstandingCents, long CreditCents);
 
 public record LedgerEntry(
     string Id, string MemberId, string MemberName, long AmountCents,
@@ -139,7 +137,9 @@ public sealed class LocalStore
     public Summary Totals()
     {
         var list = Members();
-        return new Summary(list.Count, list.Sum(x => x.ChargedCents), list.Sum(x => x.PaidCents));
+        return new Summary(
+            list.Count, list.Sum(x => x.ChargedCents), list.Sum(x => x.PaidCents),
+            list.Sum(x => x.DebtCents), list.Sum(x => x.CreditCents));
     }
 
     private static void ValidateMember(string name, string group, string email)
