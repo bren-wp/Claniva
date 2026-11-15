@@ -5,7 +5,9 @@ Svaka objedinjena razvojna iteracija mora imati GitHub Release s valjanim izgra�
 - Clanarina-Android.apk
 - Clanarina-Android.aab
 - Clanarina-Portable.exe (bez instalacijskog čarobnjaka; samoraspakiravajući exe)
-- Clanarina-Setup.exe (NSIS Modern UI2 s licencnim uvjetima)
+- Clanarina-Setup.exe
+- Clanarina-Demo-Portable.exe — neovisna samoraspakiravajuća demo distribucija bez licencnog ključa
+- Clanarina-Demo-Setup.exe — neovisni demo instalacijski program, bez aktivacije, s izmišljenim članovima i uplatama (NSIS Modern UI2 s licencnim uvjetima)
 - Clanarina-Full-Source.zip (svi izvori za Windows, Android, PHP, web i brending)
 - Clanarina-Web-Source.zip (web i brending)
 - LICENSE-COMMERCIAL.txt
@@ -36,3 +38,9 @@ može prikazati upozorenje. Ne tvrditi da je datoteka potpisana ako nije.
 **Svako izdanje blokirati** ako build, provjera ili pakiranje nije uspješno.
 Ne prikazivati razvojne verzije kao produkcijski dovršene, niti marketing prikaze
 kao potvrđene screenshotove.
+
+## Zaštita demo podataka i oznake izdanja
+
+Demo je zasebna **compile-time** varijanta (`DemoBuild=true`), `ClanarinaDemo.exe` i vlastiti `LocalAppData/ClanarinaDemo/data/clanarina.db`. Demo ne koristi produkcijsku bazu, ne traži licencni ključ i sadrži 24 izmišljena člana te demonstracijska zaduženja i uplate. U sučelju je jasno označen kao DEMO. Uninstaller demo aplikacije nikada ne dira lokalne podatke pune Članarine. Demo ne sadrži stvarne osobne podatke niti ključeve.
+
+Ne smije se prikazivati da je produkcijska licenca integrirana dok nije implementirana i testirana. Novi release blokira ako bilo koja od šest izvršnih datoteka nedostaje ili je prazna.
