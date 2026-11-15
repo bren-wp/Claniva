@@ -45,11 +45,11 @@ public sealed partial class MainWindow
                 metrics.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
             var cards = new[]
             {
-                Metric("Članovi", summary.Members.ToString(), 37, 99, 235),
-                Metric("Zaduženo", LocalStore.Money(summary.ChargedCents), 187, 130, 12),
-                Metric("Evidentirano", LocalStore.Money(summary.PaidCents), 10, 148, 110),
-                Metric("Dugovanja", LocalStore.Money(summary.OutstandingCents), 214, 60, 67),
-                Metric("Preplate", LocalStore.Money(summary.CreditCents), 37, 99, 235)
+                Metric("Članovi", summary.Members.ToString(), BrandPalette.Blue),
+                Metric("Zaduženo", LocalStore.Money(summary.ChargedCents), BrandPalette.Gold),
+                Metric("Evidentirano", LocalStore.Money(summary.PaidCents), BrandPalette.Teal),
+                Metric("Dugovanja", LocalStore.Money(summary.OutstandingCents), BrandPalette.Danger),
+                Metric("Preplate", LocalStore.Money(summary.CreditCents), BrandPalette.Blue)
             };
             for (int i = 0; i < cards.Length; i++)
             {

@@ -71,13 +71,13 @@ public sealed partial class MainWindow : Window
         {
             Text = "Članarina", FontSize = 24,
             FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-            Foreground = new SolidColorBrush(Color.FromArgb(255, 15, 31, 58)),
+            Foreground = new SolidColorBrush(BrandPalette.Navy),
             TextTrimming = TextTrimming.CharacterEllipsis
         });
         header.Children.Add(new TextBlock
         {
             Text = "by BRENDIGO", FontSize = 12,
-            Foreground = new SolidColorBrush(Color.FromArgb(255, 100, 116, 139))
+            Foreground = new SolidColorBrush(BrandPalette.Muted)
         });
         Navigation.PaneHeader = header;
         foreach (var (tag, name) in new (string Tag, string Name)[]
@@ -110,7 +110,7 @@ public sealed partial class MainWindow : Window
         };
         var host = new Grid
         {
-            Background = new SolidColorBrush(Color.FromArgb(255, 245, 247, 251))
+            Background = new SolidColorBrush(BrandPalette.Background)
         };
         host.Children.Add(Navigation);
         Content = host;

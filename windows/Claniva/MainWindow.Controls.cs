@@ -35,12 +35,12 @@ public sealed partial class MainWindow
         return b;
     }
 
-    private static StackPanel Metric(string title, string amount, byte r, byte g, byte b)
+    private static StackPanel Metric(string title, string amount, Color accent)
     {
         var panel = new StackPanel { Spacing = 10, Padding = new Thickness(13) };
         panel.Children.Add(Text(title, 15));
         var value = Text(amount, 23, true);
-        value.Foreground = Brush(r, g, b);
+        value.Foreground = new SolidColorBrush(accent);
         panel.Children.Add(value);
         return panel;
     }
