@@ -70,7 +70,7 @@ import java.util.Locale
                     Text("Dug: " + euroAmount(member.debtCents) +
                         "  ·  Preplata: " + euroAmount(member.creditCents),
                         fontWeight=if(member.debtCents>0) FontWeight.SemiBold else FontWeight.Normal,
-                        color=if(member.debtCents>0) Brand.Danger else Brand.Success,
+                        color=if(member.debtCents>0) Brand.Danger else Brand.SuccessInk,
                         style=MaterialTheme.typography.bodyMedium)
                     Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = { showingDetails = member.id }) { Text("Detalji") }

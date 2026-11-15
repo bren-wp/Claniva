@@ -15,6 +15,7 @@ object Brand {
     val Muted = Color(0xFF64748B)
     val Stroke = Color(0xFFDCE5F0)
     val Success = Color(0xFF0B946E)
+    val SuccessInk = Color(0xFF087358)
 }
 private val colors = lightColorScheme(
     primary=Brand.Blue, secondary=Brand.Teal, background=Brand.Background,

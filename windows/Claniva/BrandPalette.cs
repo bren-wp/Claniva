@@ -21,5 +21,6 @@ internal static class BrandPalette
     internal static readonly Color White = Color.FromArgb(255, 255, 255, 255);
     internal static readonly Color SidebarSecondary = Color.FromArgb(255, 190, 211, 237);
     internal static readonly Color Stroke = Color.FromArgb(255, 220, 229, 240);
-    internal static readonly Color TealDark = Color.FromArgb(255, 11, 148, 110);
+    internal static readonly Color TealDark = Color.FromArgb(255, 8, 115, 88);
+    internal static readonly Color Ink = Color.FromArgb(255, 23, 36, 58);
 }

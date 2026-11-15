@@ -17,15 +17,29 @@ public sealed partial class MainWindow
             PageContent.Children.Add(Panel(Text("Nema evidentiranih transakcija.")));
             return;
         }
-        foreach (var entry in entries)
+        var list = new StackPanel { Spacing = 10 };
+        var visible = 0;
+        foreach (var entry in entries.Take(60))
         {
-            var cell = new StackPanel { Spacing = 4, Padding = new Thickness(5) };
-            cell.Children.Add(Text(entry.MemberName, 17, true));
-            cell.Children.Add(Text(LocalStore.Money(entry.AmountCents), 21, true));
+            var cell = new StackPanel { Spacing = 7 };
+            var heading = Text(entry.MemberName, 17, true);
+            heading.Foreground = new SolidColorBrush(BrandPalette.Navy);
+            cell.Children.Add(heading);
+            var amount = Text(LocalStore.Money(entry.AmountCents), 21, true);
+            amount.Foreground = new SolidColorBrush(BrandPalette.Ink);
+            cell.Children.Add(amount);
             cell.Children.Add(Text((charges ? "Razdoblje: " : "Referenca: ") +
                 (entry.Extra.Length == 0 ? "Nije navedeno" : entry.Extra), 14));
-            cell.Children.Add(Text("Evidentirano: " + entry.CreatedAt, 13));
-            PageContent.Children.Add(Panel(cell));
+            var date = Text("Evidentirano: " + entry.CreatedAt, 13);
+            date.Foreground = new SolidColorBrush(BrandPalette.Muted);
+            cell.Children.Add(date);
+            list.Children.Add(Panel(cell));
+            visible++;
         }
+        if (entries.Count > visible)
+            list.Children.Add(Text(
+                "Prikazano " + visible + " od " + entries.Count +
+                " stavki. Za potpuni pregled koristite filtre u sljedećoj iteraciji.", 14));
+        PageContent.Children.Add(list);
     }
 }

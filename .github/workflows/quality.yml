@@ -27,6 +27,8 @@ jobs:
         run: python3 scripts/test_financial_contract.py
       - name: Enforce safe native WinUI bootstrap and source module layout
         run: python3 scripts/test_native_bootstrap.py
+      - name: Verify design tokens, accessibility contrast and native visual parity
+        run: python3 scripts/test_design_contract.py
   php-licensing:
     runs-on: ubuntu-latest
     steps:
