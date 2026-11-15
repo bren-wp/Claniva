@@ -35,7 +35,7 @@ public sealed partial class MainWindow : Window
         {
             if (!_ready) return;
             var count = DashboardColumns();
-            if (count != _lastLayoutColumns && _module is "dashboard" or "reports")
+            if (count != _lastLayoutColumns && (_module is "dashboard" or "reports"))
                 Draw();
         };
         Navigation.SelectedItem = Navigation.MenuItems[0];
@@ -149,7 +149,7 @@ public sealed partial class MainWindow : Window
                 metrics.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             var rowCount = (5 + columnCount - 1) / columnCount;
             for (int i = 0; i < rowCount; i++)
-                metrics.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                metrics.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
             var cards = new[]
             {
                 Metric("Članovi", summary.Members.ToString(), 37, 99, 235),

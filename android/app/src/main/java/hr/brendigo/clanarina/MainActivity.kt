@@ -113,19 +113,33 @@ private fun DatabaseRecovery(onRetry: () -> Unit) {
             }
         }}
     ) { inner ->
-        Column(Modifier.fillMaxSize().padding(inner).padding(horizontal=16.dp)) {
+        Column(Modifier.fillMaxSize().padding(inner).padding(horizontal=12.dp)) {
             Spacer(Modifier.height(16.dp))
             Text(page,style=MaterialTheme.typography.headlineMedium,fontWeight=FontWeight.Bold)
             Spacer(Modifier.height(14.dp))
             when(page) {
                 "Početna" -> Column(Modifier.verticalScroll(rememberScrollState())) {
-                    Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                        StatCard("Članovi",totals.members.toString(),Brand.Blue,Modifier.weight(1f))
-                        StatCard("Uplaćeno",euro(totals.paidCents),Brand.Teal,Modifier.weight(1f))
-                    }
-                    Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                        StatCard("Zaduženo",euro(totals.chargedCents),Brand.Gold,Modifier.weight(1f))
-                        StatCard("Dugovanja",euro(totals.outstandingCents),Brand.Danger,Modifier.weight(1f))
+                    // Compact viewports and large fonts must not clip the balances.
+                    BoxWithConstraints(Modifier.fillMaxWidth()) {
+                        if (maxWidth < 410.dp) {
+                            Column {
+                                StatCard("Članovi", totals.members.toString(), Brand.Blue, Modifier.fillMaxWidth())
+                                StatCard("Uplaćeno", euro(totals.paidCents), Brand.Teal, Modifier.fillMaxWidth())
+                                StatCard("Zaduženo", euro(totals.chargedCents), Brand.Gold, Modifier.fillMaxWidth())
+                                StatCard("Dugovanja", euro(totals.outstandingCents), Brand.Danger, Modifier.fillMaxWidth())
+                            }
+                        } else {
+                            Column {
+                                Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                                    StatCard("Članovi", totals.members.toString(), Brand.Blue, Modifier.weight(1f))
+                                    StatCard("Uplaćeno", euro(totals.paidCents), Brand.Teal, Modifier.weight(1f))
+                                }
+                                Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                                    StatCard("Zaduženo", euro(totals.chargedCents), Brand.Gold, Modifier.weight(1f))
+                                    StatCard("Dugovanja", euro(totals.outstandingCents), Brand.Danger, Modifier.weight(1f))
+                                }
+                            }
+                        }
                     }
                     Spacer(Modifier.height(16.dp))
                     Text("Brze radnje",fontWeight=FontWeight.Bold)
