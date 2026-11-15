@@ -1,0 +1,11 @@
+screen_id,screen_name,windows_implemented,android_implemented,windows_capture,android_capture,pixel_audit,notes
+dashboard,Nadzorna ploča,partial,partial,no,no,pending,Konceptualni prikazi u branding/
+members,Članovi,partial,partial,no,no,pending,Potreban funkcionalni QA
+dues,Članarine,partial,partial,no,no,pending,Potreban funkcionalni QA
+payments,Uplate,partial,partial,no,no,pending,Potreban funkcionalni QA
+debts,Dugovanja,partial,partial,no,no,pending,Potreban funkcionalni QA
+slips,Uplatnice,no,no,no,no,pending,HUB-3/EPC QR standardi
+bank,Bankovni izvodi,no,no,no,no,pending,CSV camt.053
+reports,Izvještaji,partial,partial,no,no,pending,Export
+license,Licenca,partial,partial,no,no,pending,Online/offline protokol
+settings,Postavke,partial,partial,no,no,pending,Local only

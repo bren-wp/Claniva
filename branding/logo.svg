@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 190" role="img" aria-label="Članarina by BRENDIGO">
+<rect width="850" height="190" fill="none"/>
+<svg x="8" y="5" width="174" height="174" viewBox="0 0 512 512">
+<path d="M100 230C116 116 214 66 304 101c35 14 65 39 84 72" fill="none" stroke="#F4B942" stroke-width="29" stroke-linecap="round"/>
+<g fill="#0F1F3A"><circle cx="256" cy="184" r="47"/><circle cx="160" cy="226" r="34"/><circle cx="349" cy="226" r="34"/><path d="M188 298c-3-44 29-82 68-82s71 38 68 82v25H188z"/><path d="M100 292c3-25 24-43 50-43 13 0 24 5 32 13-10 21-14 43-10 66h-72z"/><path d="M340 266c10-11 22-17 35-17 27 0 47 19 49 44v35h-81z"/></g>
+<path d="M103 374c48 48 122 69 198 45" fill="none" stroke="#14B8A6" stroke-width="27" stroke-linecap="round"/>
+<circle cx="357" cy="368" r="71" fill="#14B8A6" stroke="white" stroke-width="14"/>
+<path d="m323 366 23 24 47-52" stroke="#fff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
+<text x="193" y="110" font-family="Inter,Arial,sans-serif" font-size="79" font-weight="800" fill="#0F1F3A">Članarina</text>
+<text x="199" y="148" font-family="Inter,Arial,sans-serif" font-size="23" letter-spacing="4" fill="#64748B">BY BRENDIGO</text>
+</svg>
