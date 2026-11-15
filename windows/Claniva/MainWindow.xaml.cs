@@ -8,7 +8,7 @@ namespace Claniva;
 
 public sealed partial class MainWindow : Window
 {
-    private readonly LocalStore _store = new();
+    private readonly LocalStore _store;
     private string _module = "dashboard";
     private string _query = "";
     private bool _activeOnly;
@@ -16,6 +16,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        _store = new LocalStore();
 #if DEMO_BUILD
         Title = "Članarina DEMO — by BRENDIGO";
 #endif
