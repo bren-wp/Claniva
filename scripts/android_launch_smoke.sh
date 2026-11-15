@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 APK="android/app/build/outputs/apk/debug/app-debug.apk"
+if [[ $# -gt 0 ]]; then APK="$1"; fi
 PKG="hr.brendigo.clanarina"
 OUT="$PWD/qa/runtime/android"
 mkdir -p "$OUT"
