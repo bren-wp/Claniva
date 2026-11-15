@@ -20,6 +20,8 @@ jobs:
           python3 scripts/test_visual_audit.py
       - name: Check demo isolation and required release artifacts
         run: python3 scripts/test_demo_rules.py
+      - name: Test financial schema migration and debt/prepayment invariants
+        run: python3 scripts/test_financial_contract.py
   php-licensing:
     runs-on: ubuntu-latest
     steps:
