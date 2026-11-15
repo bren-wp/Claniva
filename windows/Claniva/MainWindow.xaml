@@ -4,37 +4,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Članarina by BRENDIGO">
   <Grid Background="#F5F7FB">
-    <NavigationView x:Name="Navigation" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed"
-                    IsSettingsVisible="False" SelectionChanged="Navigation_SelectionChanged"
-                    OpenPaneLength="236" Header="Članarine pod kontrolom.">
+    <!-- Start with only standard controls: prevent WinUI XAML parse failures caused by
+         unsupported Symbol names or identity-dependent ms-appx SVG resources. -->
+    <NavigationView x:Name="Navigation"
+                    PaneDisplayMode="Auto"
+                    CompactModeThresholdWidth="720"
+                    ExpandedModeThresholdWidth="1120"
+                    OpenPaneLength="238"
+                    CompactPaneLength="48"
+                    IsBackButtonVisible="Collapsed"
+                    IsSettingsVisible="False"
+                    SelectionChanged="Navigation_SelectionChanged">
       <NavigationView.PaneHeader>
-        <StackPanel Margin="12,20,0,16" Spacing="8">
-          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-            <Image Width="46" Height="46" Stretch="Uniform" AutomationProperties.Name="Logotip Članarina">
-              <Image.Source>
-                <SvgImageSource UriSource="ms-appx:///Assets/BrandIcon.svg"/>
-              </Image.Source>
-            </Image>
-            <TextBlock Text="Članarina" FontSize="26" FontWeight="Bold" Foreground="#0F1F3A"
-                       VerticalAlignment="Center"/>
-          </StackPanel>
+        <StackPanel Padding="12,16,10,12" Spacing="4">
+          <TextBlock Text="Članarina" FontSize="24" FontWeight="Bold"
+                     Foreground="#0F1F3A" TextTrimming="CharacterEllipsis"/>
           <TextBlock Text="by BRENDIGO" FontSize="12" Foreground="#64748B"/>
         </StackPanel>
       </NavigationView.PaneHeader>
       <NavigationView.MenuItems>
-        <NavigationViewItem Content="Nadzorna ploča" Tag="dashboard" Icon="Home"/>
-        <NavigationViewItem Content="Članovi" Tag="members" Icon="People"/>
-        <NavigationViewItem Content="Članarine" Tag="dues" Icon="Calendar"/>
-        <NavigationViewItem Content="Uplate" Tag="payments" Icon="Accept"/>
-        <NavigationViewItem Content="Dugovanja" Tag="debts" Icon="Important"/>
-        <NavigationViewItem Content="Uplatnice" Tag="slips" Icon="Document"/>
-        <NavigationViewItem Content="Bankovni izvodi" Tag="bank" Icon="Library"/>
-        <NavigationViewItem Content="Izvještaji" Tag="reports" Icon="View"/>
-        <NavigationViewItem Content="Licenca" Tag="license" Icon="Permissions"/>
-        <NavigationViewItem Content="Postavke" Tag="settings" Icon="Setting"/>
+        <NavigationViewItem Content="Nadzorna ploča" Tag="dashboard"/>
+        <NavigationViewItem Content="Članovi" Tag="members"/>
+        <NavigationViewItem Content="Članarine" Tag="dues"/>
+        <NavigationViewItem Content="Uplate" Tag="payments"/>
+        <NavigationViewItem Content="Dugovanja" Tag="debts"/>
+        <NavigationViewItem Content="Uplatnice" Tag="slips"/>
+        <NavigationViewItem Content="Bankovni izvodi" Tag="bank"/>
+        <NavigationViewItem Content="Izvještaji" Tag="reports"/>
+        <NavigationViewItem Content="Licenca" Tag="license"/>
+        <NavigationViewItem Content="Postavke" Tag="settings"/>
       </NavigationView.MenuItems>
-      <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel x:Name="PageContent" Padding="24" Spacing="16"/>
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                    HorizontalScrollMode="Disabled"
+                    VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="PageContent" Padding="22,16" Spacing="14"
+                    HorizontalAlignment="Stretch"/>
       </ScrollViewer>
     </NavigationView>
   </Grid>

@@ -187,7 +187,11 @@ jobs:
   windows-launch:
     name: Open installed and portable Windows Full + Demo
     needs: [windows]
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 16
     steps:
       - uses: actions/checkout@v4
@@ -202,7 +206,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: windows-packages-launch-evidence
+          name: windows-packages-launch-evidence-${{ matrix.os }}
           path: |
             qa/runtime/windows/
             qa/runtime/windows-package/

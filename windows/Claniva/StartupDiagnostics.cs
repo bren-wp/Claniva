@@ -28,7 +28,13 @@ internal static class StartupDiagnostics
             if (File.Exists(path) && new FileInfo(path).Length > 512_000)
                 File.Move(path, path + ".old", true);
             // Never log SQL queries, member details, license keys or user-controlled input.
-            var text = $"{DateTimeOffset.Now:O} stage={stage} type={ex.GetType().FullName} hresult=0x{ex.HResult:X8}{Environment.NewLine}";
+            // XAML parser details are useful for diagnosing HRESULT 0x802B000A.
+            // Never add arbitrary user-entered strings to this log.
+            var parserDetail = stage.Contains("xaml", StringComparison.OrdinalIgnoreCase)
+                ? ex.Message.Replace('\r', ' ').Replace('\n', ' ')
+                : string.Empty;
+            if (parserDetail.Length > 420) parserDetail = parserDetail[..420];
+            var text = $"{DateTimeOffset.Now:O} stage={stage} type={ex.GetType().FullName} hresult=0x{ex.HResult:X8} detail={parserDetail}{Environment.NewLine}";
             File.AppendAllText(path, text, new UTF8Encoding(false));
         }
         catch

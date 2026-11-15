@@ -2,6 +2,8 @@ using Claniva.Data;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Windowing;
+using Windows.Graphics;
 using Windows.UI;
 
 namespace Claniva;
@@ -12,20 +14,65 @@ public sealed partial class MainWindow : Window
     private string _module = "dashboard";
     private string _query = "";
     private bool _activeOnly;
+    private bool _ready;
+    private int _lastLayoutColumns = -1;
 
     public MainWindow()
     {
-        InitializeComponent();
-        _store = new LocalStore();
+        // Keep startup stages separate: HRESULT 0x802B000A is generally a XAML parser error.
+        try { InitializeComponent(); }
+        catch (Exception ex) { StartupDiagnostics.Record("main-window-xaml", ex); throw; }
+
+        try { _store = new LocalStore(); }
+        catch (Exception ex) { StartupDiagnostics.Record("local-sqlite", ex); throw; }
+
 #if DEMO_BUILD
         Title = "Članarina DEMO — by BRENDIGO";
 #endif
+        ConfigureInitialWindowBounds();
+        _ready = true;
+        Navigation.SizeChanged += (_, _) =>
+        {
+            if (!_ready) return;
+            var count = DashboardColumns();
+            if (count != _lastLayoutColumns && (_module is "dashboard" or "reports"))
+                Draw();
+        };
         Navigation.SelectedItem = Navigation.MenuItems[0];
         Draw();
     }
 
+    // Start centered and windowed, never automatically maximized or full-screen.
+    private void ConfigureInitialWindowBounds()
+    {
+        try
+        {
+            var work = DisplayArea.GetFromWindowId(
+                AppWindow.Id, DisplayAreaFallback.Primary).WorkArea;
+            var width = Math.Min(1160, Math.Max(320, work.Width - 56));
+            var height = Math.Min(780, Math.Max(320, work.Height - 56));
+            AppWindow.Resize(new SizeInt32(width, height));
+            AppWindow.Move(new PointInt32(
+                work.X + Math.Max(0, (work.Width - width) / 2),
+                work.Y + Math.Max(0, (work.Height - height) / 2)));
+        }
+        catch (Exception ex)
+        {
+            // The default Windows size is a usable fallback if monitor APIs fail.
+            StartupDiagnostics.Record("window-bounds", ex);
+        }
+    }
+
+    private int DashboardColumns()
+    {
+        var width = Navigation?.ActualWidth ?? 0;
+        return width < 470 ? 1 : width < 760 ? 2 : width < 1060 ? 3 : 5;
+    }
+
     private void Navigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
+        // SelectedItem may change from XAML before the SQLite store exists.
+        if (!_ready) return;
         if (args.SelectedItem is NavigationViewItem item)
         {
             _module = item.Tag?.ToString() ?? "dashboard";
@@ -74,6 +121,7 @@ public sealed partial class MainWindow : Window
     {
         if (PageContent is null) return;
         PageContent.Children.Clear();
+        PageContent.Padding = Navigation.ActualWidth < 680 ? new Thickness(12) : new Thickness(22);
 #if DEMO_BUILD
         PageContent.Children.Add(new Border
         {
@@ -95,8 +143,13 @@ public sealed partial class MainWindow : Window
         if (_module is "dashboard" or "reports")
         {
             var metrics = new Grid { ColumnSpacing = 10, RowSpacing = 10 };
-            for (int i = 0; i < 5; i++)
+            var columnCount = DashboardColumns();
+            _lastLayoutColumns = columnCount;
+            for (int i = 0; i < columnCount; i++)
                 metrics.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            var rowCount = (5 + columnCount - 1) / columnCount;
+            for (int i = 0; i < rowCount; i++)
+                metrics.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
             var cards = new[]
             {
                 Metric("Članovi", summary.Members.ToString(), 37, 99, 235),
@@ -108,7 +161,8 @@ public sealed partial class MainWindow : Window
             for (int i = 0; i < cards.Length; i++)
             {
                 var box = Panel(cards[i]);
-                Grid.SetColumn(box, i);
+                Grid.SetColumn(box, i % columnCount);
+                Grid.SetRow(box, i / columnCount);
                 metrics.Children.Add(box);
             }
             PageContent.Children.Add(metrics);
@@ -173,11 +227,16 @@ public sealed partial class MainWindow : Window
 
     private void ShowFilter()
     {
-        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+        var compact = Navigation.ActualWidth < 740;
+        var row = new StackPanel
+        {
+            Orientation = compact ? Orientation.Vertical : Orientation.Horizontal,
+            Spacing = 10
+        };
         var search = new TextBox
         {
             Header = "Pretraži ime ili grupu", PlaceholderText = "Ime ili grupa",
-            Text = _query, MinWidth = 280, MaxWidth = 360
+            Text = _query, MinWidth = compact ? 0 : 240, MaxWidth = compact ? 1000 : 360
         };
         var active = new CheckBox
         {
@@ -266,7 +325,12 @@ public sealed partial class MainWindow : Window
         content.Children.Add(Text("Uplate (" + payments.Count + ")", 17, true));
         foreach (var payment in payments.Take(18))
             content.Children.Add(Text(payment.Extra + " · " + LocalStore.Money(payment.AmountCents), 14));
-        var scroller = new ScrollViewer { Content = content, MaxHeight = 500 };
+        var scroller = new ScrollViewer
+        {
+            Content = content,
+            MaxHeight = Math.Max(190, Math.Min(460, Navigation.ActualHeight - 180)),
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+        };
         await new ContentDialog
         {
             Title = "Detalji člana", Content = scroller, CloseButtonText = "Zatvori",
@@ -341,7 +405,14 @@ public sealed partial class MainWindow : Window
 
     private ContentDialog Dialog(string title, UIElement body) => new()
     {
-        Title = title, Content = body, PrimaryButtonText = "Spremi",
+        Title = title,
+        Content = new ScrollViewer
+        {
+            Content = body,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            MaxHeight = Math.Max(190, Math.Min(430, Navigation.ActualHeight - 170))
+        },
+        PrimaryButtonText = "Spremi",
         CloseButtonText = "Odustani", DefaultButton = ContentDialogButton.Primary,
         XamlRoot = PageContent.XamlRoot
     };

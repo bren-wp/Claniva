@@ -33,4 +33,24 @@ if grep -E -A 4 'FATAL EXCEPTION|Process: hr\.brendigo\.clanarina' "$OUT/logcat.
   cat "$OUT/fatal.txt"
   exit 1
 fi
+# Smoke-test real rendering on three viewport sizes; golden-screen approval is separate.
+restore_display() {
+  adb shell wm size reset >/dev/null 2>&1 || true
+  adb shell wm density reset >/dev/null 2>&1 || true
+}
+trap restore_display EXIT
+for spec in "small:360x640:320" "normal:412x915:360" "tablet:800x1280:320"; do
+  IFS=: read -r label size dpi <<< "$spec"
+  adb shell wm size "$size"
+  adb shell wm density "$dpi"
+  sleep 3
+  if ! adb shell pidof "$PKG" >/dev/null; then
+    echo "::error::Android app stopped in responsive viewport $label ($size @ $dpi)"
+    exit 1
+  fi
+  adb shell screencap -p "/sdcard/Clanarina-$label.png"
+  adb pull "/sdcard/Clanarina-$label.png" "$OUT/$label.png" >/dev/null
+  test -s "$OUT/$label.png"
+done
+
 echo "PASS: actual emulator Activity started twice and remained alive; screenshots captured."
