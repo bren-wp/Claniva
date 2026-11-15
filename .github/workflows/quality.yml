@@ -1,0 +1,20 @@
+name: Quality — brand, PHP, website
+on:
+  push:
+    branches: [main, feat/**]
+  pull_request:
+jobs:
+  brand-and-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify brand tokens and static links
+        run: python3 scripts/check_assets.py
+  php-licensing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax
+        run: find licensing -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: License signature and seat smoke tests
+        run: php licensing/tests/smoke.php

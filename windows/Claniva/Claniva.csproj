@@ -14,5 +14,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260921001" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
+    <Content Include="Assets\BrandIcon.svg" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
