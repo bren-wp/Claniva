@@ -91,6 +91,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           if (!(Test-Path "$pub\ClanarinaDemo.exe")) { throw 'Missing DEMO executable' }
           if (Test-Path "$pub\Clanarina.exe") { throw 'DEMO output contains full app executable' }
+      - name: Test actual Windows DEMO data generation
+        shell: pwsh
+        run: |
+          dotnet run --project tests/ClanarinaDemoSmoke/ClanarinaDemoSmoke.csproj --configuration Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Install NSIS modern installer toolchain
         shell: pwsh
         run: |
