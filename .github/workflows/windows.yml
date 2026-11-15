@@ -1,4 +1,7 @@
 name: Windows — WinUI 3 CI
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 on:
   push:
     branches: [main, feat/**]
