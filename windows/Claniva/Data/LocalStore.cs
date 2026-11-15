@@ -75,7 +75,7 @@ public sealed partial class LocalStore
         using var pragma = db.CreateCommand();
         // Opening a read-only screen should never renegotiate the WAL journal mode.
         // Busy timeout avoids sporadic SQLITE_BUSY errors on quick successive edits.
-        pragma.CommandText = "PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;";
+        pragma.CommandText = "PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; PRAGMA trusted_schema=OFF;";
         pragma.ExecuteNonQuery();
         return db;
     }

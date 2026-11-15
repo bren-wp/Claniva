@@ -85,7 +85,8 @@ import java.util.Locale
         },
         confirmButton = { TextButton(onClick = {
             try { onSave(selectedId, amount, extra) }
-            catch (e: Exception) { message = e.message ?: "Neuspjelo spremanje. Provjerite iznos i duplikate." }
+            catch (e: IllegalArgumentException) { message = e.message ?: "Provjerite iznos." }
+            catch (e: Exception) { message = "Spremanje nije uspjelo. Provjerite iznos ili duplikate." }
         }) { Text("Spremi") } },
         dismissButton = { TextButton(onClick = onClose) { Text("Odustani") } }
     )
