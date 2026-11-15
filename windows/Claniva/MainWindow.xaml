@@ -8,8 +8,16 @@
                     IsSettingsVisible="False" SelectionChanged="Navigation_SelectionChanged"
                     OpenPaneLength="236" Header="Članarine pod kontrolom.">
       <NavigationView.PaneHeader>
-        <StackPanel Margin="12,20,0,16">
-          <TextBlock Text="Članarina" FontSize="29" FontWeight="Bold" Foreground="#0F1F3A"/>
+        <StackPanel Margin="12,20,0,16" Spacing="8">
+          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <Image Width="46" Height="46" Stretch="Uniform" AutomationProperties.Name="Logotip Članarina">
+              <Image.Source>
+                <SvgImageSource UriSource="ms-appx:///Assets/BrandIcon.svg"/>
+              </Image.Source>
+            </Image>
+            <TextBlock Text="Članarina" FontSize="26" FontWeight="Bold" Foreground="#0F1F3A"
+                       VerticalAlignment="Center"/>
+          </StackPanel>
           <TextBlock Text="by BRENDIGO" FontSize="12" Foreground="#64748B"/>
         </StackPanel>
       </NavigationView.PaneHeader>
