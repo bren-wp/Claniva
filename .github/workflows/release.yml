@@ -151,9 +151,66 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+  android-launch:
+    name: Install and launch signed APK on emulator
+    needs: [android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-android
+          path: dist
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and open the exact release APK twice
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: bash scripts/android_launch_smoke.sh dist/Clanarina-Android.apk
+      - name: Upload actual Android launch evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-apk-launch-evidence
+          path: qa/runtime/android/
+          if-no-files-found: warn
+
+  windows-launch:
+    name: Open installed and portable Windows Full + Demo
+    needs: [windows]
+    runs-on: windows-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-windows
+          path: dist
+      - name: Execute real Setup and Portable files in both editions
+        shell: pwsh
+        run: ./scripts/windows_package_launch_smoke.ps1 -Distribution dist
+      - name: Upload package launch logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-packages-launch-evidence
+          path: |
+            qa/runtime/windows/
+            qa/runtime/windows-package/
+          if-no-files-found: warn
+
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [android, windows, source]
+    needs: [android, windows, source, android-launch, windows-launch]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
