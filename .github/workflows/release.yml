@@ -94,7 +94,8 @@ jobs:
           $pub = Join-Path $env:GITHUB_WORKSPACE 'out\publish'
           $dest = Join-Path $env:GITHUB_WORKSPACE 'dist'
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
-          $nsis = (Get-Command makensis.exe -ErrorAction Stop).Source
+          $nsis = 'C:\Program Files (x86)\NSIS\makensis.exe'
+          if (!(Test-Path $nsis)) { $nsis = (Get-Command makensis.exe -ErrorAction Stop).Source }
           $defines = @("/V2", "/DPUBLISH_DIR=$pub", "/DOUTPUT_DIR=$dest", "/DVERSION=0.2.$env:GITHUB_RUN_NUMBER", "/DLICENSE_FILE=$env:GITHUB_WORKSPACE\LICENSE-COMMERCIAL.txt")
           & $nsis @defines "windows\installer\Clanarina.nsi"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
