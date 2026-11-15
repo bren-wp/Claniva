@@ -31,6 +31,7 @@ public partial class App : Application
         {
             _window = new MainWindow();
             _window.Activate();
+            StartupDiagnostics.MarkReady();
         }
         catch (Exception ex)
         {

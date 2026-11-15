@@ -30,6 +30,8 @@ public sealed partial class MainWindow : Window
 
 #if DEMO_BUILD
         Title = "Članarina DEMO — by BRENDIGO";
+#else
+        Title = "Članarina — by BRENDIGO";
 #endif
         ConfigureInitialWindowBounds();
         _ready = true;

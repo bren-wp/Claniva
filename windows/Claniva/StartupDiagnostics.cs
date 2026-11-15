@@ -43,6 +43,22 @@ internal static class StartupDiagnostics
         }
     }
 
+    // Technical status only; never log members, payments or license keys.
+    internal static void MarkReady()
+    {
+        try
+        {
+            var path = LogPath;
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            if (File.Exists(path) && new FileInfo(path).Length > 512_000)
+                File.Move(path, path + ".old", true);
+            File.AppendAllText(path,
+                $"{DateTimeOffset.UtcNow:O} stage=main-window-activated pid={Environment.ProcessId}{Environment.NewLine}",
+                new UTF8Encoding(false));
+        }
+        catch { /* Diagnostics must not break the UI. */ }
+    }
+
     [DllImport("user32.dll", EntryPoint = "MessageBoxW", CharSet = CharSet.Unicode)]
     private static extern int MessageBox(IntPtr owner, string message, string caption, uint type);
 
