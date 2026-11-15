@@ -38,6 +38,14 @@ assert 'CompactModeThresholdWidth = 660' in win
 assert 'Icon = NavigationIcon(tag)' in win and 'ToolTipService.SetToolTip(item, name)' in win
 assert 'new Thickness(14, 62, 14, 24)' in views, "Minimal nav header must not overlap DEMO/banner"
 assert 'private static FontIcon NavigationIcon' in win
+assert '_lastMinimal != minimal' in win, "A 740 -> 660dp transition must trigger re-render"
+assert '_lastMinimal = Navigation.ActualWidth < 660' in views
+smoke = (r/"scripts/windows_launch_smoke.ps1").read_text(encoding="utf-8")
+assert 'function Assert-RenderedCapture' in smoke and 'function Wait-RenderedCapture' in smoke
+assert '@(700, 540)' in smoke, "The compact-to-minimal transition needs a runtime check"
+money = (r/"windows/Claniva/Data/LocalStore.Money.cs").read_text(encoding="utf-8")
+assert 'CurrencySymbol = "€"' in money, "Windows currency must not revert to HRK"
+assert 'Currency.getInstance("EUR")' in android, "Android currency must explicitly be EUR"
 
 assert 'shortcuts.Children.Add(Action("Novo zaduženje", AddCharge_Click))' in views
 assert 'shortcuts.Children.Add(Action("Nova uplata", AddPayment_Click))' in views
