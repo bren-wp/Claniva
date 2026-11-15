@@ -159,4 +159,4 @@ jobs:
           set -euo pipefail
           tag="v0.2.$GITHUB_RUN_NUMBER-dev"
           printf '%s\n' 'DEVELOPMENT PRE-RELEASE: Not for real member or financial data.' 'See ANDROID-SIGNING-STATUS.txt; temporary Android keys are NOT Play production keys.' 'Windows binaries are not yet Authenticode signed.' 'Commercial EULA is a legal draft pending verification.' 'Pixel-perfect and full licensing integration remain unverified.' > release-notes.txt
-          gh release create "$tag" release/* --target "$GITHUB_SHA" --title "Članarina $tag - APK AAB Portable Setup Source" --notes-file release-notes.txt --prerelease
+          gh -R "$GITHUB_REPOSITORY" release create "$tag" release/* --target "$GITHUB_SHA" --title "Članarina $tag - APK AAB Portable Setup Source" --notes-file release-notes.txt --prerelease
