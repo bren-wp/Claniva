@@ -6,6 +6,7 @@ def load(path): return (root/path).read_text(encoding="utf-8")
 win=root/"windows/Claniva"
 assert not (win/"MainWindow.xaml").exists(), "Old startup XAML still in build"
 assert not (win/"MainWindow.xaml.cs").exists()
+assert 'XamlControlsResources' in load('windows/Claniva/App.xaml'), 'Default WinUI Fluent styles missing'
 core=load("windows/Claniva/MainWindow.cs")
 assert "InitializeShell();" in core and "InitializeComponent();" not in core
 assert "Content = host;" in core and "new NavigationView" in core
