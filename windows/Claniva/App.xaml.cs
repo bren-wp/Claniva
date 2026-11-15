@@ -1,12 +1,41 @@
 using Microsoft.UI.Xaml;
+
 namespace Claniva;
+
 public partial class App : Application
 {
     private Window? _window;
-    public App() { InitializeComponent(); }
+
+    public App()
+    {
+        try
+        {
+            InitializeComponent();
+            UnhandledException += (_, args) =>
+            {
+                // Record the failure, but never pretend an unhandled UI fault is recovered.
+                if (args.Exception is { } ex)
+                    StartupDiagnostics.Record("unhandled-xaml", ex);
+            };
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.ShowStartupFailure(ex);
+            throw;
+        }
+    }
+
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        _window = new MainWindow();
-        _window.Activate();
+        try
+        {
+            _window = new MainWindow();
+            _window.Activate();
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.ShowStartupFailure(ex);
+            Exit();
+        }
     }
 }
