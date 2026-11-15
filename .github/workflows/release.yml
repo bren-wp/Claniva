@@ -23,10 +23,10 @@ jobs:
       - name: Configure signing
         shell: bash
         env:
-          STORE_B64: ${{ secrets.CLANARINA_ANDROID_KEYSTORE_BASE64 }
-          STORE_PASS: ${{ secrets.CLANARINA_ANDROID_STORE_PASS }
-          ALIAS: ${{ secrets.CLANARINA_ANDROID_KEY_ALIAS }
-          KEY_PASS: ${{ secrets.CLANARINA_ANDROID_KEY_PASS }
+          STORE_B64: ${{ secrets.CLANARINA_ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASS: ${{ secrets.CLANARINA_ANDROID_STORE_PASS }}
+          ALIAS: ${{ secrets.CLANARINA_ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.CLANARINA_ANDROID_KEY_PASS }}
         run: |
           set -euo pipefail
           umask 077
@@ -153,7 +153,7 @@ jobs:
       - name: Create GitHub prerelease with every artifact
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           tag="v0.2.$GITHUB_RUN_NUMBER-dev"
