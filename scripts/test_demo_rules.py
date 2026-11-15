@@ -8,7 +8,7 @@ def read(path):
 project=read("windows/Claniva/Claniva.csproj")
 store=read("windows/Claniva/Data/LocalStore.cs")
 demo=read("windows/Claniva/Data/DemoData.cs")
-window=read("windows/Claniva/MainWindow.xaml.cs")
+window=read("windows/Claniva/MainWindow.Views.cs")
 nsis=read("windows/installer/Clanarina.nsi")
 release=read(".github/workflows/release.yml")
 manifest=json.loads(read("qa/visual-manifest.json"))

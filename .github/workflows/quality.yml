@@ -22,6 +22,8 @@ jobs:
         run: python3 scripts/test_demo_rules.py
       - name: Test financial schema migration and debt/prepayment invariants
         run: python3 scripts/test_financial_contract.py
+      - name: Enforce safe native WinUI bootstrap and source module layout
+        run: python3 scripts/test_native_bootstrap.py
   php-licensing:
     runs-on: ubuntu-latest
     steps:
