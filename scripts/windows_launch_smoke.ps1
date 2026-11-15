@@ -10,6 +10,39 @@ $workdir = Split-Path -Parent $exe
 $out = Join-Path $env:GITHUB_WORKSPACE 'qa\runtime\windows'
 New-Item -ItemType Directory -Path $out -Force | Out-Null
 $report = Join-Path $out (($ArtifactName -replace '[^A-Za-z0-9-]', '_') + '.txt')
+function Save-WindowCapture {
+  param([IntPtr]$WindowHandle, [string]$Label)
+  # Visual evidence only. Do not turn a headless screenshot limitation into a
+  # false application crash, and do not claim pixels match an unapproved reference.
+  $bitmap = $null
+  $graphics = $null
+  try {
+    $rect = New-Object ClanarinaWindowProbe+Rect
+    if (-not [ClanarinaWindowProbe]::GetWindowRect($WindowHandle, [ref]$rect)) {
+      throw "GetWindowRect failed"
+    }
+    $w = $rect.Right - $rect.Left
+    $h = $rect.Bottom - $rect.Top
+    if ($w -le 0 -or $h -le 0 -or $w -gt 4000 -or $h -gt 3000) {
+      throw "Capture bounds are invalid"
+    }
+    Add-Type -AssemblyName System.Drawing
+    $bitmap = [System.Drawing.Bitmap]::new($w, $h)
+    $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.CopyFromScreen($rect.Left, $rect.Top, 0, 0, $bitmap.Size)
+    $destination = Join-Path $out (($Label -replace '[^A-Za-z0-9-]', '_') + '.png')
+    $bitmap.Save($destination, [System.Drawing.Imaging.ImageFormat]::Png)
+    Add-Content $report "CAPTURE: $destination ($w x $h)"
+  }
+  catch {
+    Add-Content $report "CAPTURE_UNAVAILABLE: $($_.Exception.GetType().Name)"
+  }
+  finally {
+    if ($null -ne $graphics) { $graphics.Dispose() }
+    if ($null -ne $bitmap) { $bitmap.Dispose() }
+  }
+}
+
 $process = $null
 try {
   $process = Start-Process -FilePath $exe -WorkingDirectory $workdir -PassThru
@@ -107,6 +140,7 @@ public static class ClanarinaWindowProbe {
     throw "$ArtifactName started maximized or fullscreen ($($width)x$($height))"
   }
   Add-Content $report "Window title=$title hwnd=$hwnd pid=$windowPid size=$($width)x$($height)"
+  Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-default"
   foreach ($size in @(@(840, 620), @(560, 440))) {
     $w = [Math]::Min($size[0], [Math]::Max(350, $screenW - 100))
     $h = [Math]::Min($size[1], [Math]::Max(300, $screenH - 100))
@@ -119,6 +153,7 @@ public static class ClanarinaWindowProbe {
       throw "$ArtifactName crashed or lost its main window after resize to $($w)x$($h)"
     }
     Add-Content $report "PASS resized to $($w)x$($h)"
+    Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-$($w)x$($h)"
   }
   $product = if ($ArtifactName -match 'Demo') { 'ClanarinaDemo' } else { 'Clanarina' }
   $startupLog = Join-Path $env:LOCALAPPDATA "$product\logs\startup.log"
