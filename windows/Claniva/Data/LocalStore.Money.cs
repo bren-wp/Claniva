@@ -5,8 +5,19 @@ namespace Claniva.Data;
 
 public sealed partial class LocalStore
 {
+    // Explicit EUR avoids obsolete HRK symbols from older Windows/ICU locales.
+    private static readonly NumberFormatInfo EuroFormat = CreateEuroFormat();
+
+    private static NumberFormatInfo CreateEuroFormat()
+    {
+        var format = (NumberFormatInfo)CultureInfo.GetCultureInfo("hr-HR").NumberFormat.Clone();
+        format.CurrencySymbol = "€";
+        format.CurrencyPositivePattern = 3; // e.g. 25,00 €
+        return format;
+    }
+
     public static string Money(long cents) =>
-        (cents / 100m).ToString("C", CultureInfo.GetCultureInfo("hr-HR"));
+        (cents / 100m).ToString("C", EuroFormat);
 
     public static long ParseMoney(string value)
     {
