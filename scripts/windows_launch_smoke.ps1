@@ -43,6 +43,37 @@ function Save-WindowCapture {
   }
 }
 
+
+function Assert-ResponsiveCapture {
+  param([string]$Label, [string]$Kind)
+  $name = ($Label -replace '[^A-Za-z0-9-]', '_') + '.png'
+  $path = Join-Path $out $name
+  if (!(Test-Path $path)) { throw "$Label screenshot was not saved; visual regression cannot be verified" }
+  Add-Type -AssemblyName System.Drawing
+  $bmp = [System.Drawing.Bitmap]::FromFile($path)
+  try {
+    if ($Kind -eq 'wide' -and $bmp.Width -ge 900 -and $bmp.Height -ge 440) {
+      # A 900+ px window must show its expanded navy navigation at x=210,
+      # rather than a 48px strip with clipped white labels.
+      $sample = $bmp.GetPixel(210, 400)
+      if (($sample.R + $sample.G + $sample.B) -gt 450) {
+        throw "$Label pane is not expanded/navy at width $($bmp.Width): RGB=$($sample.R),$($sample.G),$($sample.B)"
+      }
+      Add-Content $report "VISUAL PASS: expanded pane at $($bmp.Width)px"
+    }
+    if ($Kind -eq 'minimal' -and $bmp.Width -le 580 -and $bmp.Height -ge 300) {
+      # On narrow windows the menu button must not overlap the gold DEMO
+      # banner; the content's top gap remains background, not the banner.
+      $sample = $bmp.GetPixel(65, 55)
+      if ($sample.R -gt 220 -and $sample.G -gt 200 -and $sample.G -lt 240 -and $sample.B -lt 200) {
+        throw "$Label DEMO banner overlaps minimal menu region: RGB=$($sample.R),$($sample.G),$($sample.B)"
+      }
+      Add-Content $report "VISUAL PASS: minimal menu top padding at $($bmp.Width)px"
+    }
+  }
+  finally { $bmp.Dispose() }
+}
+
 $process = $null
 try {
   $process = Start-Process -FilePath $exe -WorkingDirectory $workdir -PassThru
@@ -141,6 +172,7 @@ public static class ClanarinaWindowProbe {
   }
   Add-Content $report "Window title=$title hwnd=$hwnd pid=$windowPid size=$($width)x$($height)"
   Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-default"
+  Assert-ResponsiveCapture -Label "$ArtifactName-default" -Kind "wide"
   foreach ($size in @(@(840, 620), @(560, 440))) {
     $w = [Math]::Min($size[0], [Math]::Max(350, $screenW - 100))
     $h = [Math]::Min($size[1], [Math]::Max(300, $screenH - 100))
@@ -154,6 +186,7 @@ public static class ClanarinaWindowProbe {
     }
     Add-Content $report "PASS resized to $($w)x$($h)"
     Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-$($w)x$($h)"
+    if ($w -le 580) { Assert-ResponsiveCapture -Label "$ArtifactName-$($w)x$($h)" -Kind "minimal" }
   }
   $product = if ($ArtifactName -match 'Demo') { 'ClanarinaDemo' } else { 'Clanarina' }
   $startupLog = Join-Path $env:LOCALAPPDATA "$product\logs\startup.log"
