@@ -51,14 +51,14 @@ class LocalStore(context: Context) : SQLiteOpenHelper(context, "clanarina.db", n
         require(cents in 1..10_000_000_000L)
         writableDatabase.execSQL(
             "INSERT INTO charges(id,member_id,amount_cents,note) VALUES(?,?,?,?)",
-            arrayOf(UUID.randomUUID().toString(),memberId,cents,"Članarina")
+            arrayOf<Any>(UUID.randomUUID().toString(),memberId,cents,"Članarina")
         )
     }
     @Synchronized fun addPayment(memberId:String,cents:Long) {
         require(cents in 1..10_000_000_000L)
         writableDatabase.execSQL(
             "INSERT INTO payments(id,member_id,amount_cents,note) VALUES(?,?,?,?)",
-            arrayOf(UUID.randomUUID().toString(),memberId,cents,"Uplata članarine")
+            arrayOf<Any>(UUID.randomUUID().toString(),memberId,cents,"Uplata članarine")
         )
     }
     @Synchronized fun totals(): Totals {
