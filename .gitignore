@@ -1,0 +1,25 @@
+# IDEs, generated packages, and private data
+.gradle/
+.idea/
+.vs/
+.vscode/
+**/build/
+**/bin/
+**/obj/
+**/.cxx/
+*.apk
+*.aab
+*.msix
+*.exe
+*.keystore
+*.jks
+*.pfx
+*.db
+*.db-shm
+*.db-wal
+*.clubpack
+**/local.properties
+licensing/private/
+licensing/storage/
+*.secret
+.DS_Store
