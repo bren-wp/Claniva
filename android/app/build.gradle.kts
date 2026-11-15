@@ -4,7 +4,7 @@ plugins {
 }
 android {
     namespace = "hr.brendigo.clanarina"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         applicationId = "hr.brendigo.clanarina"
         minSdk = 26
