@@ -18,6 +18,8 @@ public sealed partial class MainWindow : Window
     private bool _activeOnly;
     private bool _ready;
     private int _lastLayoutColumns = -1;
+    private bool? _lastCompact;
+    private int _visibleMembers = 30;
 
     public MainWindow()
     {
@@ -39,7 +41,8 @@ public sealed partial class MainWindow : Window
         {
             if (!_ready) return;
             var count = DashboardColumns();
-            if (count != _lastLayoutColumns && (_module is "dashboard" or "reports"))
+            var compact = Navigation.ActualWidth < 740;
+            if (count != _lastLayoutColumns || _lastCompact != compact)
                 Draw();
         };
         Navigation.SelectionChanged += Navigation_SelectionChanged;
@@ -59,11 +62,16 @@ public sealed partial class MainWindow : Window
             PaneDisplayMode = NavigationViewPaneDisplayMode.Auto,
             CompactModeThresholdWidth = 720,
             ExpandedModeThresholdWidth = 1120,
-            OpenPaneLength = 238,
+            OpenPaneLength = 236,
             CompactPaneLength = 48,
             IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed,
-            IsSettingsVisible = false
+            IsSettingsVisible = false,
+            RequestedTheme = ElementTheme.Light,
+            Background = new SolidColorBrush(BrandPalette.Background)
         };
+        // WinUI NavigationView paints its pane and item states from theme resources,
+        // not from the outer Grid. All states require contrast-safe color overrides.
+        ApplyNavigationColors();
         var header = new StackPanel
         {
             Spacing = 4,
@@ -73,13 +81,13 @@ public sealed partial class MainWindow : Window
         {
             Text = "Članarina", FontSize = 24,
             FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-            Foreground = new SolidColorBrush(BrandPalette.Navy),
+            Foreground = new SolidColorBrush(BrandPalette.White),
             TextTrimming = TextTrimming.CharacterEllipsis
         });
         header.Children.Add(new TextBlock
         {
             Text = "by BRENDIGO", FontSize = 12,
-            Foreground = new SolidColorBrush(BrandPalette.Muted)
+            Foreground = new SolidColorBrush(BrandPalette.SidebarSecondary)
         });
         Navigation.PaneHeader = header;
         foreach (var (tag, name) in new (string Tag, string Name)[]
@@ -95,7 +103,12 @@ public sealed partial class MainWindow : Window
             ("license", "Licenca"),
             ("settings", "Postavke")
         })
-            Navigation.MenuItems.Add(new NavigationViewItem { Tag = tag, Content = name });
+            Navigation.MenuItems.Add(new NavigationViewItem
+            {
+                Tag = tag, Content = name,
+                Foreground = new SolidColorBrush(BrandPalette.White),
+                MinHeight = 44
+            });
 
         PageContent = new StackPanel
         {
@@ -105,6 +118,7 @@ public sealed partial class MainWindow : Window
         };
         Navigation.Content = new ScrollViewer
         {
+            Background = new SolidColorBrush(BrandPalette.Background),
             Content = PageContent,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
             HorizontalScrollMode = ScrollMode.Disabled,
@@ -116,6 +130,32 @@ public sealed partial class MainWindow : Window
         };
         host.Children.Add(Navigation);
         Content = host;
+    }
+
+    private void ApplyNavigationColors()
+    {
+        // WinUI lightweight styling resources are scoped to this NavigationView,
+        // leaving native system high-contrast behavior available when requested.
+        var colors = new Dictionary<string, Color>
+        {
+            ["NavigationViewExpandedPaneBackground"] = BrandPalette.Navy,
+            ["NavigationViewDefaultPaneBackground"] = BrandPalette.Navy,
+            ["NavigationViewItemForeground"] = BrandPalette.White,
+            ["NavigationViewItemForegroundPointerOver"] = BrandPalette.White,
+            ["NavigationViewItemForegroundPressed"] = BrandPalette.White,
+            ["NavigationViewItemForegroundSelected"] = BrandPalette.White,
+            ["NavigationViewItemForegroundSelectedPointerOver"] = BrandPalette.White,
+            ["NavigationViewItemForegroundSelectedPressed"] = BrandPalette.White,
+            ["NavigationViewItemBackground"] = BrandPalette.Navy,
+            ["NavigationViewItemBackgroundPointerOver"] = BrandPalette.NavyLight,
+            ["NavigationViewItemBackgroundPressed"] = BrandPalette.NavyLight,
+            ["NavigationViewItemBackgroundSelected"] = BrandPalette.Blue,
+            ["NavigationViewItemBackgroundSelectedPointerOver"] = BrandPalette.Blue,
+            ["NavigationViewItemBackgroundSelectedPressed"] = BrandPalette.Blue,
+            ["NavigationViewSelectionIndicatorForeground"] = BrandPalette.Teal
+        };
+        foreach (var pair in colors)
+            Navigation.Resources[pair.Key] = new SolidColorBrush(pair.Value);
     }
 
     // Start centered and windowed, never automatically maximized or full-screen.
@@ -145,6 +185,19 @@ public sealed partial class MainWindow : Window
         return width < 470 ? 1 : width < 760 ? 2 : width < 1060 ? 3 : 5;
     }
 
+    private void NavigateTo(string tag)
+    {
+        foreach (var item in Navigation.MenuItems)
+        {
+            if (item is NavigationViewItem navigationItem &&
+                string.Equals(navigationItem.Tag?.ToString(), tag, StringComparison.Ordinal))
+            {
+                Navigation.SelectedItem = navigationItem;
+                return;
+            }
+        }
+    }
+
     private void Navigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         // SelectedItem may change from XAML before the SQLite store exists.
@@ -154,6 +207,7 @@ public sealed partial class MainWindow : Window
             _module = item.Tag?.ToString() ?? "dashboard";
             _query = "";
             _activeOnly = false;
+            _visibleMembers = 30;
             Draw();
         }
     }
