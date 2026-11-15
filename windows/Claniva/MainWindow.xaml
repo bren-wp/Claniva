@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="Claniva.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Članarina by BRENDIGO">
+  <Grid Background="#F5F7FB">
+    <NavigationView x:Name="Navigation" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed"
+                    IsSettingsVisible="False" SelectionChanged="Navigation_SelectionChanged"
+                    OpenPaneLength="236" Header="Članarine pod kontrolom.">
+      <NavigationView.PaneHeader>
+        <StackPanel Margin="12,20,0,16">
+          <TextBlock Text="Članarina" FontSize="29" FontWeight="Bold" Foreground="#0F1F3A"/>
+          <TextBlock Text="by BRENDIGO" FontSize="12" Foreground="#64748B"/>
+        </StackPanel>
+      </NavigationView.PaneHeader>
+      <NavigationView.MenuItems>
+        <NavigationViewItem Content="Nadzorna ploča" Tag="dashboard" Icon="Home"/>
+        <NavigationViewItem Content="Članovi" Tag="members" Icon="People"/>
+        <NavigationViewItem Content="Članarine" Tag="dues" Icon="Calendar"/>
+        <NavigationViewItem Content="Uplate" Tag="payments" Icon="Accept"/>
+        <NavigationViewItem Content="Dugovanja" Tag="debts" Icon="Important"/>
+        <NavigationViewItem Content="Uplatnice" Tag="slips" Icon="Document"/>
+        <NavigationViewItem Content="Bankovni izvodi" Tag="bank" Icon="Library"/>
+        <NavigationViewItem Content="Izvještaji" Tag="reports" Icon="View"/>
+        <NavigationViewItem Content="Licenca" Tag="license" Icon="Permissions"/>
+        <NavigationViewItem Content="Postavke" Tag="settings" Icon="Setting"/>
+      </NavigationView.MenuItems>
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="PageContent" Padding="24" Spacing="16"/>
+      </ScrollViewer>
+    </NavigationView>
+  </Grid>
+</Window>
