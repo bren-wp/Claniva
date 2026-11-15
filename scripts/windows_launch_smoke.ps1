@@ -44,6 +44,60 @@ function Save-WindowCapture {
 }
 
 
+# A native HWND can be visible before WinUI has painted the client area.
+# Reject blank captures rather than treating them as successful UI evidence.
+function Assert-RenderedCapture {
+  param([string]$Label)
+  $path = Join-Path $out (($Label -replace '[^A-Za-z0-9-]', '_') + '.png')
+  if (!(Test-Path $path)) { throw "$Label screenshot was not saved" }
+  Add-Type -AssemblyName System.Drawing
+  $bmp = [System.Drawing.Bitmap]::FromFile($path)
+  try {
+    $painted = 0
+    $stepX = [Math]::Max(16, [int]($bmp.Width / 16))
+    $stepY = [Math]::Max(16, [int]($bmp.Height / 14))
+    for ($y = 48; $y -lt ($bmp.Height - 16); $y += $stepY) {
+      for ($x = 16; $x -lt ($bmp.Width - 16); $x += $stepX) {
+        $pixel = $bmp.GetPixel($x, $y)
+        if ($pixel.R -lt 248 -or $pixel.G -lt 248 -or $pixel.B -lt 248) {
+          $painted++
+        }
+      }
+    }
+    if ($painted -lt 10) {
+      throw "$Label has an unpainted/blank client area (nonwhite samples=$painted)"
+    }
+    Add-Content $report "RENDERED: $Label nonwhite samples=$painted"
+  }
+  finally { $bmp.Dispose() }
+}
+
+function Wait-RenderedCapture {
+  param([IntPtr]$WindowHandle, [string]$Label, [string]$Kind = 'none')
+  $deadline = (Get-Date).AddSeconds(20)
+  $lastFailure = 'No screenshot captured'
+  $capturePath = Join-Path $out (($Label -replace '[^A-Za-z0-9-]', '_') + '.png')
+  do {
+    # Never reuse a successful old image when the current capture fails.
+    Remove-Item -Path $capturePath -Force -ErrorAction SilentlyContinue
+    Save-WindowCapture -WindowHandle $WindowHandle -Label $Label
+    try {
+      Assert-RenderedCapture -Label $Label
+      if ($Kind -ne 'none') {
+        Assert-ResponsiveCapture -Label $Label -Kind $Kind
+      }
+      Add-Content $report "PAINT PASS: $Label"
+      return
+    }
+    catch {
+      $lastFailure = $_.Exception.Message
+      Add-Content $report "RENDER PENDING: $lastFailure"
+      Start-Sleep -Milliseconds 800
+    }
+  } while ((Get-Date) -lt $deadline)
+  throw "$Label did not render a valid UI within 20 seconds: $lastFailure"
+}
+
 function Assert-ResponsiveCapture {
   param([string]$Label, [string]$Kind)
   $name = ($Label -replace '[^A-Za-z0-9-]', '_') + '.png'
@@ -171,9 +225,9 @@ public static class ClanarinaWindowProbe {
     throw "$ArtifactName started maximized or fullscreen ($($width)x$($height))"
   }
   Add-Content $report "Window title=$title hwnd=$hwnd pid=$windowPid size=$($width)x$($height)"
-  Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-default"
-  Assert-ResponsiveCapture -Label "$ArtifactName-default" -Kind "wide"
-  foreach ($size in @(@(840, 620), @(560, 440))) {
+  Wait-RenderedCapture -WindowHandle $hwnd -Label "$ArtifactName-default" -Kind "wide"
+  # Include a width between the 740px compact and 660px minimal transitions.
+  foreach ($size in @(@(840, 620), @(700, 540), @(560, 440))) {
     $w = [Math]::Min($size[0], [Math]::Max(350, $screenW - 100))
     $h = [Math]::Min($size[1], [Math]::Max(300, $screenH - 100))
     if (-not [ClanarinaWindowProbe]::MoveWindow($hwnd, 40, 40, $w, $h, $true)) {
@@ -185,8 +239,8 @@ public static class ClanarinaWindowProbe {
       throw "$ArtifactName crashed or lost its main window after resize to $($w)x$($h)"
     }
     Add-Content $report "PASS resized to $($w)x$($h)"
-    Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-$($w)x$($h)"
-    if ($w -le 580) { Assert-ResponsiveCapture -Label "$ArtifactName-$($w)x$($h)" -Kind "minimal" }
+    $kind = if ($w -le 580) { 'minimal' } else { 'none' }
+    Wait-RenderedCapture -WindowHandle $hwnd -Label "$ArtifactName-$($w)x$($h)" -Kind $kind
   }
   $product = if ($ArtifactName -match 'Demo') { 'ClanarinaDemo' } else { 'Clanarina' }
   $startupLog = Join-Path $env:LOCALAPPDATA "$product\logs\startup.log"
