@@ -146,7 +146,7 @@ class LocalStore(context: Context) : SQLiteOpenHelper(context, "clanarina.db", n
         }
     }
 
-    @Synchronized fun addCharge(memberId: String, cents: Long, period: String) {
+    @Synchronized fun addCharge(memberId: String, cents: Long, period: String = "") {
         require(cents in 1..10_000_000_000L) { "Iznos nije ispravan." }
         val p = period.trim()
         require(p.isEmpty() || runCatching { YearMonth.parse(p) }.isSuccess) {
@@ -159,7 +159,7 @@ class LocalStore(context: Context) : SQLiteOpenHelper(context, "clanarina.db", n
         }
     }
 
-    @Synchronized fun addPayment(memberId: String, cents: Long, reference: String) {
+    @Synchronized fun addPayment(memberId: String, cents: Long, reference: String = "") {
         require(cents in 1..10_000_000_000L) { "Iznos nije ispravan." }
         val r = reference.trim()
         require(r.length <= 100) { "Referenca smije imati najviše 100 znakova." }

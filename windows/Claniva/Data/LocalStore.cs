@@ -227,10 +227,10 @@ public sealed class LocalStore
         tx.Commit();
     }
 
-    public void AddCharge(string memberId, long cents, string period) =>
+    public void AddCharge(string memberId, long cents, string period = "") =>
         AddAmount("charges", memberId, cents, period);
 
-    public void AddPayment(string memberId, long cents, string reference) =>
+    public void AddPayment(string memberId, long cents, string reference = "") =>
         AddAmount("payments", memberId, cents, reference);
 
     public List<LedgerEntry> Ledger(string kind, string? memberId = null)
