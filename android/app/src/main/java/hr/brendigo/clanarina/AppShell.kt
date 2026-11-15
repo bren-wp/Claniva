@@ -22,7 +22,7 @@ private val euros = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hr-H
 internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable private fun MainApp(db:LocalStore) {
+@Composable internal fun MainApp(db:LocalStore) {
     var page by remember { mutableStateOf("Početna") }
     var menu by remember { mutableStateOf(false) }
     var changes by remember { mutableIntStateOf(0) }
