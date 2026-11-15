@@ -45,6 +45,10 @@ assert "members.Take(_visibleMembers)" in (r/"windows/Claniva/MainWindow.Members
 for label in ["Članovi","Zaduženo","Evidentirano","Dugovanja","Preplate"]:
     assert f'Metric("{label}"' in views, f"Missing Windows card {label}"
     assert f'Triple("{label}"' in dashboard, f"Missing Android card {label}"
+assert 'maxWidth < 320.dp -> 1' in dashboard, "Typical phones should receive two KPI columns"
+assert 'val compactLabels = maxWidth < 280.dp' in android
+assert 'maxLines=1,overflow=TextOverflow.Ellipsis' in android
+assert '"small:360x640:160" "normal:412x915:160"' in (r/"scripts/android_launch_smoke.sh").read_text(encoding="utf-8")
 assert "ModalBottomSheet" in android and 'moreMenu=true' in android, "The More tab must open navigation"
 assert "new SolidColorBrush(BrandPalette.White)" in controls
 assert 'MemberManagement' in android and 'LedgerManagement' in android
