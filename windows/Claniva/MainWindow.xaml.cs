@@ -13,6 +13,9 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+#if DEMO_BUILD
+        Title = "Članarina DEMO — by BRENDIGO";
+#endif
         Navigation.SelectedItem=Navigation.MenuItems[0];
         Draw();
     }
@@ -40,6 +43,13 @@ public sealed partial class MainWindow : Window
     {
         if(PageContent is null) return;
         PageContent.Children.Clear();
+#if DEMO_BUILD
+        PageContent.Children.Add(new Border {
+            Background = Brush(245, 222, 169), CornerRadius = new CornerRadius(12),
+            Padding = new Thickness(14, 10, 14, 10),
+            Child = Text("DEMO IZDANJE — izmišljeni podaci · bez licence · odvojena baza", 15, true)
+        });
+#endif
         var titles=new Dictionary<string,string>{
             ["dashboard"]="Nadzorna ploča",["members"]="Članovi",["dues"]="Članarine",["payments"]="Uplate",
             ["debts"]="Dugovanja",["slips"]="Uplatnice",["bank"]="Bankovni izvodi",["reports"]="Izvještaji",

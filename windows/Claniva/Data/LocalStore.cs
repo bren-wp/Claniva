@@ -31,7 +31,11 @@ public sealed class LocalStore
     {
         var folder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            #if DEMO_BUILD
+            "ClanarinaDemo", "data");
+#else
             "Clanarina", "data");
+#endif
         Directory.CreateDirectory(folder);
         _connectionString = new SqliteConnectionStringBuilder
         {
@@ -71,6 +75,9 @@ public sealed class LocalStore
             PRAGMA user_version=2;
             """);
         tx.Commit();
+#if DEMO_BUILD
+        DemoData.Seed(_connectionString);
+#endif
     }
 
     private SqliteConnection Connect()
