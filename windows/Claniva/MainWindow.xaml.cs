@@ -325,7 +325,12 @@ public sealed partial class MainWindow : Window
         content.Children.Add(Text("Uplate (" + payments.Count + ")", 17, true));
         foreach (var payment in payments.Take(18))
             content.Children.Add(Text(payment.Extra + " · " + LocalStore.Money(payment.AmountCents), 14));
-        var scroller = new ScrollViewer { Content = content, MaxHeight = 500 };
+        var scroller = new ScrollViewer
+        {
+            Content = content,
+            MaxHeight = Math.Max(190, Math.Min(460, Navigation.ActualHeight - 180)),
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+        };
         await new ContentDialog
         {
             Title = "Detalji člana", Content = scroller, CloseButtonText = "Zatvori",
@@ -400,7 +405,14 @@ public sealed partial class MainWindow : Window
 
     private ContentDialog Dialog(string title, UIElement body) => new()
     {
-        Title = title, Content = body, PrimaryButtonText = "Spremi",
+        Title = title,
+        Content = new ScrollViewer
+        {
+            Content = body,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            MaxHeight = Math.Max(190, Math.Min(430, Navigation.ActualHeight - 170))
+        },
+        PrimaryButtonText = "Spremi",
         CloseButtonText = "Odustani", DefaultButton = ContentDialogButton.Primary,
         XamlRoot = PageContent.XamlRoot
     };
