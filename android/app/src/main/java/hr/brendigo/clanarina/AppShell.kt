@@ -17,10 +17,13 @@ import hr.brendigo.clanarina.data.LocalStore
 import hr.brendigo.clanarina.ui.Brand
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.util.Currency
 import java.util.Locale
 
 private val sections = listOf("Početna","Članovi","Članarine","Uplate","Dugovanja","Uplatnice","Bankovni izvodi","Izvještaji","Licenca","Postavke")
-private val euros = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hr-HR"))
+private val euros = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hr-HR")).apply {
+    currency = Currency.getInstance("EUR")
+}
 internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
 
 @OptIn(ExperimentalMaterial3Api::class)
