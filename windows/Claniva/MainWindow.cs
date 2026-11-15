@@ -19,6 +19,7 @@ public sealed partial class MainWindow : Window
     private bool _ready;
     private int _lastLayoutColumns = -1;
     private bool? _lastCompact;
+    private bool? _lastMinimal;
     private int _visibleMembers = 30;
 
     public MainWindow()
@@ -42,7 +43,8 @@ public sealed partial class MainWindow : Window
             if (!_ready) return;
             var count = DashboardColumns();
             var compact = Navigation.ActualWidth < 740;
-            if (count != _lastLayoutColumns || _lastCompact != compact)
+            var minimal = Navigation.ActualWidth < 660;
+            if (count != _lastLayoutColumns || _lastCompact != compact || _lastMinimal != minimal)
                 Draw();
         };
         Navigation.SelectionChanged += Navigation_SelectionChanged;
