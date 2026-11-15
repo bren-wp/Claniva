@@ -99,28 +99,16 @@ class MainActivity:ComponentActivity() {
                     OutlinedButton(onClick={page="Uplate";form="payment"},enabled=members.isNotEmpty()) { Text("Nova uplata") }
                     Text("Podaci se čuvaju samo na ovom uređaju.",style=MaterialTheme.typography.bodySmall)
                 }
-                "Članovi","Dugovanja" -> {
-                    if(page=="Članovi") Button(onClick={form="member"}) { Text("+ Novi član") }
-                    val shown=if(page=="Dugovanja") members.filter{it.balanceCents>0} else members
-                    if(shown.isEmpty()) Empty(if(page=="Članovi") "Nema članova. Dodajte prvog člana." else "Nema evidentiranih dugovanja.")
-                    LazyColumn(verticalArrangement=Arrangement.spacedBy(8.dp)) {
-                        items(shown,key={it.id}) { MemberTile(it) }
-                    }
-                }
-                "Članarine","Uplate" -> {
-                    Text(if(page=="Članarine") "Ručno zaduživanje članarina" else "Evidencija primljenih uplata")
-                    Spacer(Modifier.height(10.dp))
-                    Button(onClick={form=if(page=="Članarine")"charge" else "payment"},enabled=members.isNotEmpty()) {
-                        Text(if(page=="Članarine") "+ Novo zaduženje" else "+ Nova uplata")
-                    }
-                    if(members.isEmpty()) Empty("Prvo dodajte člana.")
-                    LazyColumn(verticalArrangement=Arrangement.spacedBy(8.dp)) { items(members,key={it.id}) { MemberTile(it) } }
-                }
+                "Članovi","Dugovanja" -> MemberManagement(db, page=="Dugovanja", changes) { changes++ }
+                "Članarine","Uplate" -> LedgerManagement(
+                    db, if(page=="Članarine") "charge" else "payment", changes
+                ) { changes++ }
                 "Izvještaji" -> Column(Modifier.verticalScroll(rememberScrollState())) {
                     StatCard("Broj članova",totals.members.toString(),Brand.Blue)
                     StatCard("Zaduženja",euro(totals.chargedCents),Brand.Gold)
                     StatCard("Evidentirane uplate",euro(totals.paidCents),Brand.Teal)
                     StatCard("Nepodmireno",euro(totals.outstandingCents),Brand.Danger)
+                    StatCard("Preplate",euro(totals.creditCents),Brand.Blue)
                 }
                 "Licenca" -> Empty("Online i offline aktivacija licence još nije povezana s aplikacijom.")
                 "Uplatnice" -> Empty("HUB-3 i EPC QR još nisu implementirani ni verificirani.")
