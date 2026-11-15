@@ -10,6 +10,12 @@ var connectionString = new SqliteConnectionStringBuilder
 
 try
 {
+    // Use the same EUR formatter as the distributed Windows application.
+    if (LocalStore.Money(2500) != "25,00 €" ||
+        LocalStore.Money(123456) != "1.234,56 €" ||
+        LocalStore.Money(0).Contains("HRK", StringComparison.OrdinalIgnoreCase))
+        throw new Exception("Money must use Croatian formatting and an explicit EUR symbol");
+
     using (var db = new SqliteConnection(connectionString))
     {
         db.Open();
