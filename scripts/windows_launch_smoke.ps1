@@ -28,48 +28,108 @@ try {
     }
   }
   if (-not $visible) { throw "$ArtifactName did not expose a visible window within $TimeoutSeconds seconds" }
-  # Exercise resizing at different desktop widths and verify the app remains windowed.
-  # Checking only an existing process/window handle previously missed real startup defects.
+  # Verify the actual WinUI main window, never just an alive process or MessageBox.
+  # A stale HWND can legitimately be observed momentarily during WinUI activation.
   $interop = @'
 using System;
 using System.Runtime.InteropServices;
-public static class ClanarinaWindowTest {
+using System.Text;
+public static class ClanarinaWindowProbe {
   [StructLayout(LayoutKind.Sequential)]
   public struct Rect { public int Left, Top, Right, Bottom; }
-  [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hwnd, out Rect rect);
-  [DllImport("user32.dll")] public static extern bool MoveWindow(IntPtr hwnd, int x, int y, int w, int h, bool repaint);
+  [DllImport("user32.dll", SetLastError=true)]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  public static extern bool IsWindow(IntPtr hwnd);
+  [DllImport("user32.dll", SetLastError=true)]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  public static extern bool GetWindowRect(IntPtr hwnd, out Rect rect);
+  [DllImport("user32.dll", SetLastError=true)]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  public static extern bool MoveWindow(IntPtr hwnd, int x, int y, int w, int h, bool repaint);
+  [DllImport("user32.dll", EntryPoint="GetWindowTextW", CharSet=CharSet.Unicode, SetLastError=true)]
+  public static extern int GetWindowText(IntPtr hwnd, StringBuilder text, int capacity);
+  [DllImport("user32.dll", SetLastError=true)]
+  public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
   [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern int GetSystemMetrics(int index);
 }
 '@
-  if (-not ('ClanarinaWindowTest' -as [type])) { Add-Type -TypeDefinition $interop }
-  $hwnd = $process.MainWindowHandle
-  $bounds = New-Object ClanarinaWindowTest+Rect
-  if (-not [ClanarinaWindowTest]::GetWindowRect($hwnd, [ref]$bounds)) {
-    throw "$ArtifactName has an inaccessible window rectangle"
+  if (-not ('ClanarinaWindowProbe' -as [type])) { Add-Type -TypeDefinition $interop }
+  $hwnd = [IntPtr]::Zero
+  $bounds = New-Object ClanarinaWindowProbe+Rect
+  $lastProblem = "No readable WinUI window yet"
+  $ready = $false
+  $probeDeadline = (Get-Date).AddSeconds(15)
+  while ((Get-Date) -lt $probeDeadline) {
+    $process.Refresh()
+    if ($process.HasExited) { throw "$ArtifactName stopped during WinUI window inspection; exit=$($process.ExitCode)" }
+    $candidate = $process.MainWindowHandle
+    if ($candidate -eq [IntPtr]::Zero -or -not [ClanarinaWindowProbe]::IsWindow($candidate)) {
+      $lastProblem = "Window not yet valid: HWND=$candidate"
+      Start-Sleep -Milliseconds 500
+      continue
+    }
+    [uint32]$windowPid = 0
+    [void][ClanarinaWindowProbe]::GetWindowThreadProcessId($candidate, [ref]$windowPid)
+    if ($windowPid -ne $process.Id) {
+      throw "$ArtifactName HWND belongs to PID=$windowPid, expected PID=$($process.Id)"
+    }
+    $caption = New-Object System.Text.StringBuilder 512
+    [void][ClanarinaWindowProbe]::GetWindowText($candidate, $caption, $caption.Capacity)
+    $title = $caption.ToString()
+    if ($title -match 'pogreška pri pokretanju|startup error') {
+      throw "$ArtifactName displayed an error dialog, not the application: $title"
+    }
+    if ($title -notmatch '^Članarina( DEMO)? — by BRENDIGO$') {
+      $lastProblem = "Unexpected title: '$title' (HWND=$candidate)"
+      Start-Sleep -Milliseconds 500
+      continue
+    }
+    if (-not [ClanarinaWindowProbe]::GetWindowRect($candidate, [ref]$bounds)) {
+      $win32 = [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
+      $lastProblem = "GetWindowRect failed: win32=$win32 hwnd=$candidate title='$title'"
+      Start-Sleep -Milliseconds 500
+      continue
+    }
+    $hwnd = $candidate
+    $ready = $true
+    break
   }
+  if (-not $ready) { throw "$ArtifactName did not expose its native main window: $lastProblem" }
   $width = $bounds.Right - $bounds.Left
   $height = $bounds.Bottom - $bounds.Top
-  $screenW = [ClanarinaWindowTest]::GetSystemMetrics(0)
-  $screenH = [ClanarinaWindowTest]::GetSystemMetrics(1)
-  if ([ClanarinaWindowTest]::IsZoomed($hwnd) -or ($width -ge $screenW -and $height -ge $screenH)) {
-    throw "$ArtifactName opened maximized/full-screen ($width x $height), not windowed"
+  $screenW = [ClanarinaWindowProbe]::GetSystemMetrics(0)
+  $screenH = [ClanarinaWindowProbe]::GetSystemMetrics(1)
+  if ($width -lt 320 -or $height -lt 280 -or $screenW -le 0 -or $screenH -le 0) {
+    throw "$ArtifactName invalid window/desktop bounds ($($width)x$($height), desktop $($screenW)x$($screenH))"
   }
-  Add-Content $report "Initial window: $width x $height, desktop: $screenW x $screenH"
+  if ([ClanarinaWindowProbe]::IsZoomed($hwnd) -or ($width -ge $screenW -and $height -ge $screenH)) {
+    throw "$ArtifactName started maximized or fullscreen ($($width)x$($height))"
+  }
+  Add-Content $report "Window title=$title hwnd=$hwnd pid=$windowPid size=$($width)x$($height)"
   foreach ($size in @(@(840, 620), @(560, 440))) {
     $w = [Math]::Min($size[0], [Math]::Max(350, $screenW - 100))
     $h = [Math]::Min($size[1], [Math]::Max(300, $screenH - 100))
-    if (-not [ClanarinaWindowTest]::MoveWindow($hwnd, 40, 40, $w, $h, $true)) {
-      throw "$ArtifactName could not resize to $w x $h"
+    if (-not [ClanarinaWindowProbe]::MoveWindow($hwnd, 40, 40, $w, $h, $true)) {
+      throw "$ArtifactName could not resize to $($w)x$($h), Win32=$([System.Runtime.InteropServices.Marshal]::GetLastWin32Error())"
     }
     Start-Sleep -Seconds 2
     $process.Refresh()
-    if ($process.HasExited -or $process.MainWindowHandle -eq [IntPtr]::Zero) {
-      throw "$ArtifactName crashed while resizing to $w x $h"
+    if ($process.HasExited -or -not [ClanarinaWindowProbe]::IsWindow($hwnd)) {
+      throw "$ArtifactName crashed or lost its main window after resize to $($w)x$($h)"
     }
-    Add-Content $report "PASS resized: $w x $h"
+    Add-Content $report "PASS resized to $($w)x$($h)"
   }
-
+  $product = if ($ArtifactName -match 'Demo') { 'ClanarinaDemo' } else { 'Clanarina' }
+  $startupLog = Join-Path $env:LOCALAPPDATA "$product\logs\startup.log"
+  if (-not (Test-Path $startupLog)) { throw "$ArtifactName did not record application activation" }
+  $tail = Get-Content $startupLog -Tail 40
+  if (-not ($tail | Where-Object { $_ -match "stage=main-window-activated pid=$($process.Id)(\s|$)" })) {
+    throw "$ArtifactName did not record its activation in $startupLog"
+  }
+  Start-Sleep -Seconds 2
+  $process.Refresh()
+  if ($process.HasExited) { throw "$ArtifactName stopped immediately after startup and resize" }
   Add-Content $report "PASS: window handle=$($process.MainWindowHandle)"
   Write-Host "PASS: $ArtifactName opened a real window"
 }
