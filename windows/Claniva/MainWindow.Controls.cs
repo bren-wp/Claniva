@@ -23,25 +23,57 @@ public sealed partial class MainWindow
 
     private static Border Panel(UIElement child) => new()
     {
-        Child = child, Background = Brush(255, 255, 255),
-        CornerRadius = new CornerRadius(16), BorderBrush = Brush(220, 229, 240),
-        BorderThickness = new Thickness(1), Padding = new Thickness(12)
+        Child = child,
+        Background = new SolidColorBrush(BrandPalette.White),
+        CornerRadius = new CornerRadius(16),
+        BorderBrush = new SolidColorBrush(BrandPalette.Stroke),
+        BorderThickness = new Thickness(1),
+        Padding = new Thickness(16),
+        HorizontalAlignment = HorizontalAlignment.Stretch
     };
 
     private static Button Action(string title, RoutedEventHandler handler)
     {
-        var b = new Button { Content = title, HorizontalAlignment = HorizontalAlignment.Left };
+        var b = new Button
+        {
+            Content = title,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            MinHeight = 40,
+            Padding = new Thickness(16, 8, 16, 8),
+            Background = new SolidColorBrush(BrandPalette.Blue),
+            Foreground = new SolidColorBrush(BrandPalette.White),
+            BorderBrush = new SolidColorBrush(BrandPalette.Blue),
+            CornerRadius = new CornerRadius(10)
+        };
         b.Click += handler;
         return b;
     }
 
     private static StackPanel Metric(string title, string amount, Color accent)
     {
-        var panel = new StackPanel { Spacing = 10, Padding = new Thickness(13) };
-        panel.Children.Add(Text(title, 15));
-        var value = Text(amount, 23, true);
-        value.Foreground = new SolidColorBrush(accent);
-        panel.Children.Add(value);
-        return panel;
+        var card = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 14,
+            VerticalAlignment = VerticalAlignment.Center,
+            MinHeight = 64
+        };
+        card.Children.Add(new Border
+        {
+            Background = new SolidColorBrush(accent),
+            Width = 5, Height = 64, CornerRadius = new CornerRadius(4)
+        });
+        var content = new StackPanel
+        {
+            Spacing = 7, VerticalAlignment = VerticalAlignment.Center
+        };
+        var label = Text(title, 14);
+        label.Foreground = new SolidColorBrush(BrandPalette.Muted);
+        content.Children.Add(label);
+        var value = Text(amount, 22, true);
+        value.Foreground = new SolidColorBrush(BrandPalette.Navy);
+        content.Children.Add(value);
+        card.Children.Add(content);
+        return card;
     }
 }

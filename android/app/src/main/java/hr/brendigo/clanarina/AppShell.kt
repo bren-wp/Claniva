@@ -25,6 +25,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
 @Composable internal fun MainApp(db:LocalStore) {
     var page by remember { mutableStateOf("Početna") }
     var menu by remember { mutableStateOf(false) }
+    var moreMenu by remember { mutableStateOf(false) }
     var changes by remember { mutableIntStateOf(0) }
     val members=remember(changes) { db.listMembers() }
     val totals=remember(changes) { db.totals() }
@@ -47,12 +48,13 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             },
             colors=TopAppBarDefaults.topAppBarColors(containerColor=Brand.Navy,titleContentColor=Color.White)
         )},
-        bottomBar={ NavigationBar {
+        containerColor=Brand.Background,
+        bottomBar={ NavigationBar(containerColor=Color.White) {
             listOf("Početna","Članovi","Uplate","Više").forEach { tab ->
                 NavigationBarItem(
                     selected=(page==tab || (tab=="Više" && page !in listOf("Početna","Članovi","Uplate"))),
-                    onClick={page=if(tab=="Više") "Članarine" else tab},
-                    icon={Text(when(tab){"Početna"->"⌂";"Članovi"->"●";"Uplate"->"✓";else->"⋯"})},
+                    onClick={if(tab=="Više") moreMenu=true else page=tab},
+                    icon={Text(when(tab){"Početna"->"⌂";"Članovi"->"○";"Uplate"->"✓";else->"⋯"},color=Brand.Navy)},
                     label={Text(tab)}
                 )
             }
@@ -63,35 +65,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             Text(page,style=MaterialTheme.typography.headlineMedium,fontWeight=FontWeight.Bold)
             Spacer(Modifier.height(14.dp))
             when(page) {
-                "Početna" -> Column(Modifier.verticalScroll(rememberScrollState())) {
-                    // Compact viewports and large fonts must not clip the balances.
-                    BoxWithConstraints(Modifier.fillMaxWidth()) {
-                        if (maxWidth < 410.dp) {
-                            Column {
-                                StatCard("Članovi", totals.members.toString(), Brand.Blue, Modifier.fillMaxWidth())
-                                StatCard("Uplaćeno", euro(totals.paidCents), Brand.Teal, Modifier.fillMaxWidth())
-                                StatCard("Zaduženo", euro(totals.chargedCents), Brand.Gold, Modifier.fillMaxWidth())
-                                StatCard("Dugovanja", euro(totals.outstandingCents), Brand.Danger, Modifier.fillMaxWidth())
-                            }
-                        } else {
-                            Column {
-                                Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                                    StatCard("Članovi", totals.members.toString(), Brand.Blue, Modifier.weight(1f))
-                                    StatCard("Uplaćeno", euro(totals.paidCents), Brand.Teal, Modifier.weight(1f))
-                                }
-                                Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                                    StatCard("Zaduženo", euro(totals.chargedCents), Brand.Gold, Modifier.weight(1f))
-                                    StatCard("Dugovanja", euro(totals.outstandingCents), Brand.Danger, Modifier.weight(1f))
-                                }
-                            }
-                        }
-                    }
-                    Spacer(Modifier.height(16.dp))
-                    Text("Brze radnje",fontWeight=FontWeight.Bold)
-                    Button(onClick={page="Članovi"}) { Text("Članovi / Novi član") }
-                    OutlinedButton(onClick={page="Uplate"},enabled=members.isNotEmpty()) { Text("Nova uplata") }
-                    Text("Podaci se čuvaju samo na ovom uređaju.",style=MaterialTheme.typography.bodySmall)
-                }
+                "Početna" -> DashboardOverview(totals, members.isNotEmpty()) { page = it }
                 "Članovi","Dugovanja" -> MemberManagement(db, page=="Dugovanja", changes) { changes++ }
                 "Članarine","Uplate" -> LedgerManagement(
                     db, if(page=="Članarine") "charge" else "payment", changes
@@ -110,4 +84,18 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             }
         }
     }
+    if (moreMenu) {
+        ModalBottomSheet(onDismissRequest={moreMenu=false}) {
+            Text("Svi moduli", style=MaterialTheme.typography.titleLarge,
+                modifier=Modifier.padding(horizontal=20.dp, vertical=10.dp), color=Brand.Navy)
+            sections.filter { it !in listOf("Početna","Članovi","Uplate") }.forEach { name ->
+                TextButton(onClick={page=name;moreMenu=false},
+                    modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)) {
+                    Text(name,modifier=Modifier.fillMaxWidth().padding(start=16.dp),color=Brand.Navy)
+                }
+            }
+            Spacer(Modifier.height(26.dp))
+        }
+    }
+
 }

@@ -1,6 +1,8 @@
 package hr.brendigo.clanarina
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -46,18 +48,31 @@ import java.util.Locale
             (it.name.contains(search, ignoreCase = true) || it.group.contains(search, ignoreCase = true))
     }
     if (filtered.isEmpty()) Notice("Nema članova koji odgovaraju filtru.")
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+    LazyColumn(verticalArrangement=Arrangement.spacedBy(10.dp), contentPadding=PaddingValues(bottom=18.dp)) {
         items(filtered, key = { it.id }) { member ->
-            Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
-                Column(Modifier.fillMaxWidth().padding(14.dp)) {
-                    Text(member.name, fontWeight = FontWeight.Bold)
-                    Text(member.group.ifBlank { "Bez grupe" })
-                    Text("Zaduženo " + euroAmount(member.dueCents) +
-                        " · Evidentirano " + euroAmount(member.paidCents))
+            Card(
+                modifier=Modifier.fillMaxWidth(),
+                shape=RoundedCornerShape(16.dp),
+                border=BorderStroke(1.dp,Brand.Stroke),
+                colors=CardDefaults.cardColors(containerColor=Color.White)
+            ) {
+                Column(
+                    Modifier.fillMaxWidth().padding(horizontal=16.dp, vertical=12.dp),
+                    verticalArrangement=Arrangement.spacedBy(5.dp)
+                ) {
+                    Text(member.name, fontWeight=FontWeight.Bold,color=Brand.Navy,
+                        style=MaterialTheme.typography.titleMedium)
+                    Text("Grupa: " + member.group.ifBlank { "Bez grupe" },
+                        color=Brand.Muted,style=MaterialTheme.typography.bodySmall)
+                    Text("Zaduženo: " + euroAmount(member.dueCents) +
+                        "  ·  Evidentirano: " + euroAmount(member.paidCents),
+                        color=Brand.Ink,style=MaterialTheme.typography.bodyMedium)
                     Text("Dug: " + euroAmount(member.debtCents) +
-                        " · Preplata: " + euroAmount(member.creditCents),
-                        color = if (member.debtCents > 0) Brand.Danger else Brand.Teal)
-                    Row {
+                        "  ·  Preplata: " + euroAmount(member.creditCents),
+                        fontWeight=if(member.debtCents>0) FontWeight.SemiBold else FontWeight.Normal,
+                        color=if(member.debtCents>0) Brand.Danger else Brand.SuccessInk,
+                        style=MaterialTheme.typography.bodyMedium)
+                    Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = { showingDetails = member.id }) { Text("Detalji") }
                         TextButton(onClick = { editing = member.id }) { Text("Uredi") }
                     }

@@ -33,6 +33,7 @@ public sealed partial class MainWindow
         {
             _query = search.Text.Trim();
             _activeOnly = active.IsChecked == true;
+            _visibleMembers = 30;
             Draw();
         }));
         PageContent.Children.Add(row);
@@ -50,25 +51,45 @@ public sealed partial class MainWindow
             PageContent.Children.Add(Panel(Text("Nema članova koji odgovaraju odabranom filtru.")));
             return;
         }
-        var list = new StackPanel { Spacing = 8 };
-        foreach (var member in members)
+        var list = new StackPanel { Spacing = 9 };
+        var compact = Navigation.ActualWidth < 740;
+        foreach (var member in members.Take(_visibleMembers))
         {
             var m = member;
-            var cell = new StackPanel { Spacing = 5, Padding = new Thickness(5) };
-            cell.Children.Add(Text(m.Name, 18, true));
-            cell.Children.Add(Text("Grupa: " + (m.Group.Length == 0 ? "Bez grupe" : m.Group), 14));
-            cell.Children.Add(Text("Zaduženo: " + LocalStore.Money(m.ChargedCents) +
-                "  |  Uplaćeno: " + LocalStore.Money(m.PaidCents), 15));
-            cell.Children.Add(Text("Dug: " + LocalStore.Money(m.DebtCents) +
-                "  |  Preplata: " + LocalStore.Money(m.CreditCents), 15));
+            var cell = new StackPanel { Spacing = 8 };
+            var name = Text(m.Name, 18, true);
+            name.Foreground = new SolidColorBrush(BrandPalette.Navy);
+            cell.Children.Add(name);
+            var group = Text("Grupa: " + (m.Group.Length == 0 ? "Bez grupe" : m.Group), 13);
+            group.Foreground = new SolidColorBrush(BrandPalette.Muted);
+            cell.Children.Add(group);
+            var balances = new StackPanel
+            {
+                Orientation = compact ? Orientation.Vertical : Orientation.Horizontal,
+                Spacing = compact ? 4 : 20
+            };
+            balances.Children.Add(Text(
+                "Zaduženo: " + LocalStore.Money(m.ChargedCents) +
+                "  ·  Evidentirano: " + LocalStore.Money(m.PaidCents), 14));
+            var debt = Text("Dug: " + LocalStore.Money(m.DebtCents) +
+                "  ·  Preplata: " + LocalStore.Money(m.CreditCents), 14, m.DebtCents > 0);
+            debt.Foreground = new SolidColorBrush(m.DebtCents > 0 ? BrandPalette.Danger : BrandPalette.TealDark);
+            balances.Children.Add(debt);
+            cell.Children.Add(balances);
             if (withActions)
             {
-                var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+                var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
                 actions.Children.Add(Action("Detalji", async (_, _) => await ShowMemberDetails(m)));
                 actions.Children.Add(Action("Uredi", async (_, _) => await EditMember(m)));
                 cell.Children.Add(actions);
             }
             list.Children.Add(Panel(cell));
+        }
+        if (members.Count > _visibleMembers)
+        {
+            list.Children.Add(Action(
+                "Prikaži još članova (" + (members.Count - _visibleMembers) + ")",
+                (_, _) => { _visibleMembers += 30; Draw(); }));
         }
         PageContent.Children.Add(list);
     }

@@ -14,7 +14,10 @@ public sealed partial class MainWindow
     {
         if (PageContent is null) return;
         PageContent.Children.Clear();
-        PageContent.Padding = Navigation.ActualWidth < 680 ? new Thickness(12) : new Thickness(22);
+        _lastCompact = Navigation.ActualWidth < 740;
+        PageContent.Padding = Navigation.ActualWidth < 680
+            ? new Thickness(14, 18, 14, 24)
+            : new Thickness(26, 24, 26, 28);
 #if DEMO_BUILD
         PageContent.Children.Add(new Border
         {
@@ -31,11 +34,13 @@ public sealed partial class MainWindow
             ["bank"] = "Bankovni izvodi", ["reports"] = "Izvještaji",
             ["license"] = "Licenca", ["settings"] = "Postavke"
         };
-        PageContent.Children.Add(Text(titles.GetValueOrDefault(_module, "Članarina"), 32, true));
-        var summary = _store.Totals();
+        var heading = Text(titles.GetValueOrDefault(_module, "Članarina"), 30, true);
+        heading.Foreground = new SolidColorBrush(BrandPalette.Navy);
+        PageContent.Children.Add(heading);
         if (_module is "dashboard" or "reports")
         {
-            var metrics = new Grid { ColumnSpacing = 10, RowSpacing = 10 };
+            var summary = _store.Totals();
+            var metrics = new Grid { ColumnSpacing = 12, RowSpacing = 12 };
             var columnCount = DashboardColumns();
             _lastLayoutColumns = columnCount;
             for (int i = 0; i < columnCount; i++)
@@ -66,7 +71,18 @@ public sealed partial class MainWindow
         switch (_module)
         {
             case "dashboard":
-                PageContent.Children.Add(Panel(Text("Brze radnje: Članovi · Članarine · Uplate", 17)));
+                var shortcuts = new StackPanel
+                {
+                    Orientation = _lastCompact == true ? Orientation.Vertical : Orientation.Horizontal,
+                    Spacing = 10
+                };
+                shortcuts.Children.Add(Action("Članovi", (_, _) => NavigateTo("members")));
+                shortcuts.Children.Add(Action("Novo zaduženje", AddCharge_Click));
+                shortcuts.Children.Add(Action("Nova uplata", AddPayment_Click));
+                var quick = new StackPanel { Spacing = 12 };
+                quick.Children.Add(Text("Brze radnje", 18, true));
+                quick.Children.Add(shortcuts);
+                PageContent.Children.Add(Panel(quick));
                 ShowMembers(_store.Members().Take(8).ToList(), false);
                 break;
             case "members":
