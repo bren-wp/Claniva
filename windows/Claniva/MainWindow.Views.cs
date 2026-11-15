@@ -15,9 +15,10 @@ public sealed partial class MainWindow
         if (PageContent is null) return;
         PageContent.Children.Clear();
         _lastCompact = Navigation.ActualWidth < 740;
+        _lastMinimal = Navigation.ActualWidth < 660;
         // In Minimal mode the hamburger overlays the content header.
         // Reserve its 48-pixel command region instead of letting it cover DEMO.
-        PageContent.Padding = Navigation.ActualWidth < 660
+        PageContent.Padding = _lastMinimal == true
             ? new Thickness(14, 62, 14, 24)
             : new Thickness(26, 24, 26, 28);
 #if DEMO_BUILD
