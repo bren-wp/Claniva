@@ -9,7 +9,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Claniva</RootNamespace>
-    <AssemblyName>Clanarina</AssemblyName>
+    <AssemblyName Condition="'$(DemoBuild)' != 'true'">Clanarina</AssemblyName>
+    <AssemblyName Condition="'$(DemoBuild)' == 'true'">ClanarinaDemo</AssemblyName>
+    <DefineConstants Condition="'$(DemoBuild)' == 'true'">$(DefineConstants);DEMO_BUILD</DefineConstants>
     <Version Condition="'$(Version)' == ''">0.2.0</Version>
   </PropertyGroup>
   <ItemGroup>

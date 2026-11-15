@@ -10,13 +10,27 @@ Unicode true
   !define VERSION "0.2.0-dev"
 !endif
 
-Name "Članarina"
+!ifdef DEMO_BUILD
+  !define PRODUCT_TITLE "Članarina DEMO"
+  !define PACKAGE_NAME "Clanarina-Demo"
+  !define APP_FOLDER "ClanarinaDemo"
+  !define APP_EXECUTABLE "ClanarinaDemo.exe"
+  !define SHORTCUT_NAME "Članarina DEMO"
+!else
+  !define PRODUCT_TITLE "Članarina"
+  !define PACKAGE_NAME "Clanarina"
+  !define APP_FOLDER "Clanarina"
+  !define APP_EXECUTABLE "Clanarina.exe"
+  !define SHORTCUT_NAME "Članarina"
+!endif
+Name "${PRODUCT_TITLE}"
 BrandingText "Članarina by BRENDIGO"
+
 SetCompressor /SOLID lzma
 RequestExecutionLevel user
 
 !ifdef PORTABLE_BUILD
-  OutFile "${OUTPUT_DIR}\Clanarina-Portable.exe"
+  OutFile "${OUTPUT_DIR}\${PACKAGE_NAME}-Portable.exe"
   SilentInstall silent
   AutoCloseWindow true
   ShowInstDetails nevershow
@@ -24,17 +38,17 @@ RequestExecutionLevel user
     InitPluginsDir
     SetOutPath "$PLUGINSDIR\Clanarina"
     File /r "${PUBLISH_DIR}\*.*"
-    IfFileExists "$PLUGINSDIR\Clanarina\Clanarina.exe" +2
-      Abort "Nedostaje Clanarina.exe"
-    ExecWait '"$PLUGINSDIR\Clanarina\Clanarina.exe"' $0
+    IfFileExists "$PLUGINSDIR\Clanarina\${APP_EXECUTABLE}" +2
+      Abort "Nedostaje glavna aplikacija"
+    ExecWait '"$PLUGINSDIR\Clanarina\${APP_EXECUTABLE}"' $0
     SetErrorLevel $0
   SectionEnd
 !else
-  OutFile "${OUTPUT_DIR}\Clanarina-Setup.exe"
-  InstallDir "$LOCALAPPDATA\Programs\Clanarina"
-  InstallDirRegKey HKCU "Software\BRENDIGO\Clanarina" "InstallPath"
+  OutFile "${OUTPUT_DIR}\${PACKAGE_NAME}-Setup.exe"
+  InstallDir "$LOCALAPPDATA\Programs\${APP_FOLDER}"
+  InstallDirRegKey HKCU "Software\BRENDIGO\${APP_FOLDER}" "InstallPath"
   !define MUI_ABORTWARNING
-  !define MUI_FINISHPAGE_RUN "$INSTDIR\Clanarina.exe"
+  !define MUI_FINISHPAGE_RUN "$INSTDIR\${APP_EXECUTABLE}"
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "${LICENSE_FILE}"
   !insertmacro MUI_PAGE_DIRECTORY
@@ -44,26 +58,26 @@ RequestExecutionLevel user
   !insertmacro MUI_UNPAGE_INSTFILES
   !insertmacro MUI_LANGUAGE "Croatian"
 
-  Section "Članarina" SEC_MAIN
+  Section "${PRODUCT_TITLE}" SEC_MAIN
     SetOutPath "$INSTDIR"
     File /r "${PUBLISH_DIR}\*.*"
-    WriteRegStr HKCU "Software\BRENDIGO\Clanarina" "InstallPath" "$INSTDIR"
+    WriteRegStr HKCU "Software\BRENDIGO\${APP_FOLDER}" "InstallPath" "$INSTDIR"
     WriteUninstaller "$INSTDIR\Uninstall.exe"
-    CreateDirectory "$SMPROGRAMS\Članarina"
-    CreateShortCut "$SMPROGRAMS\Članarina\Članarina.lnk" "$INSTDIR\Clanarina.exe"
-    CreateShortCut "$SMPROGRAMS\Članarina\Deinstaliraj.lnk" "$INSTDIR\Uninstall.exe"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Clanarina" "DisplayName" "Članarina"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Clanarina" "UninstallString" '"$INSTDIR\Uninstall.exe"'
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Clanarina" "DisplayVersion" "${VERSION}"
-    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Clanarina" "Publisher" "BRENDIGO"
+    CreateDirectory "$SMPROGRAMS\${APP_FOLDER}"
+    CreateShortCut "$SMPROGRAMS\${APP_FOLDER}\${SHORTCUT_NAME}.lnk" "$INSTDIR\${APP_EXECUTABLE}"
+    CreateShortCut "$SMPROGRAMS\${APP_FOLDER}\Deinstaliraj.lnk" "$INSTDIR\Uninstall.exe"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_FOLDER}" "DisplayName" "${PRODUCT_TITLE}"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_FOLDER}" "UninstallString" '"$INSTDIR\Uninstall.exe"'
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_FOLDER}" "DisplayVersion" "${VERSION}"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_FOLDER}" "Publisher" "BRENDIGO"
   SectionEnd
   Section "Uninstall"
-    Delete "$SMPROGRAMS\Članarina\Članarina.lnk"
-    Delete "$SMPROGRAMS\Članarina\Deinstaliraj.lnk"
-    RMDir "$SMPROGRAMS\Članarina"
+    Delete "$SMPROGRAMS\${APP_FOLDER}\${SHORTCUT_NAME}.lnk"
+    Delete "$SMPROGRAMS\${APP_FOLDER}\Deinstaliraj.lnk"
+    RMDir "$SMPROGRAMS\${APP_FOLDER}"
     RMDir /r "$INSTDIR"
-    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Clanarina"
-    DeleteRegKey HKCU "Software\BRENDIGO\Clanarina"
+    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_FOLDER}"
+    DeleteRegKey HKCU "Software\BRENDIGO\${APP_FOLDER}"
     ; Do not delete users' member/payment SQLite data from LocalAppData.
   SectionEnd
 !endif

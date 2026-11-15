@@ -15,5 +15,7 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Restore
         run: dotnet restore windows/Claniva/Claniva.csproj -p:Platform=x64
+      - name: Validate DEMO dataset and isolation
+        run: dotnet run --project tests/ClanarinaDemoSmoke/ClanarinaDemoSmoke.csproj --configuration Release
       - name: Build WinUI 3
         run: dotnet build windows/Claniva/Claniva.csproj --configuration Release --no-restore -p:Platform=x64

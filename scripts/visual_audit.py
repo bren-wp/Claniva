@@ -12,7 +12,7 @@ def manifest():
     assert len(data["screens"])>=40
     assert len({s["id"] for s in data["screens"]})==len(data["screens"])
     for s in data["screens"]:
-        assert s["platforms"]==["windows","android"]
+        assert s["platforms"]==["windows","android","windows-demo"]
         assert all(k in s["states"] for k in ("default","empty","populated","validation-error","dialog"))
     return data
 

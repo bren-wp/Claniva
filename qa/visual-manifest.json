@@ -23,6 +23,15 @@
       "theme": "light",
       "locale": "hr-HR",
       "fontScale": 1
+    },
+    "windows-demo": {
+      "width": 1440,
+      "height": 900,
+      "scale": 1,
+      "theme": "light",
+      "locale": "hr-HR",
+      "fontScale": 1,
+      "dataset": "fictional-demo-v1"
     }
   },
   "screens": [
@@ -38,7 +47,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -54,7 +64,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -70,7 +81,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -86,7 +98,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -102,7 +115,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -118,7 +132,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -134,7 +149,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -150,7 +166,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -166,7 +183,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -182,7 +200,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -198,7 +217,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -214,7 +234,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -230,7 +251,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -246,7 +268,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -262,7 +285,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -278,7 +302,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -294,7 +319,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -310,7 +336,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -326,7 +353,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -342,7 +370,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -358,7 +387,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -374,7 +404,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -390,7 +421,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -406,7 +438,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -422,7 +455,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -438,7 +472,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -454,7 +489,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -470,7 +506,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -486,7 +523,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -502,7 +540,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -518,7 +557,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -534,7 +574,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -550,7 +591,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -566,7 +608,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -582,7 +625,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -598,7 +642,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -614,7 +659,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -630,7 +676,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -646,7 +693,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     },
@@ -662,7 +710,8 @@
       ],
       "platforms": [
         "windows",
-        "android"
+        "android",
+        "windows-demo"
       ],
       "status": "unverified"
     }

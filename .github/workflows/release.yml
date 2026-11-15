@@ -83,6 +83,19 @@ jobs:
           dotnet publish windows/Claniva/Claniva.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -o "$pub"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           if (!(Test-Path "$pub\Clanarina.exe")) { throw 'No native executable' }
+      - name: Publish separate licence-free Windows DEMO
+        shell: pwsh
+        run: |
+          $pub = Join-Path $env:GITHUB_WORKSPACE 'out\demo'
+          dotnet publish windows/Claniva/Claniva.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:DemoBuild=true -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -o "$pub"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (!(Test-Path "$pub\ClanarinaDemo.exe")) { throw 'Missing DEMO executable' }
+          if (Test-Path "$pub\Clanarina.exe") { throw 'DEMO output contains full app executable' }
+      - name: Test actual Windows DEMO data generation
+        shell: pwsh
+        run: |
+          dotnet run --project tests/ClanarinaDemoSmoke/ClanarinaDemoSmoke.csproj --configuration Release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Install NSIS modern installer toolchain
         shell: pwsh
         run: |
@@ -101,7 +114,13 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $nsis @defines "/DPORTABLE_BUILD" "windows\installer\Clanarina.nsi"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          foreach ($name in @('Clanarina-Setup.exe','Clanarina-Portable.exe')) {
+          $demoPub = Join-Path $env:GITHUB_WORKSPACE 'out\demo'
+          $demoDefines = @("/V2", "/DPUBLISH_DIR=$demoPub", "/DOUTPUT_DIR=$dest", "/DVERSION=0.2.$env:GITHUB_RUN_NUMBER", "/DLICENSE_FILE=$env:GITHUB_WORKSPACE\LICENSE-COMMERCIAL.txt", "/DDEMO_BUILD")
+          & $nsis @demoDefines "windows\installer\Clanarina.nsi"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $nsis @demoDefines "/DPORTABLE_BUILD" "windows\installer\Clanarina.nsi"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($name in @('Clanarina-Setup.exe','Clanarina-Portable.exe','Clanarina-Demo-Setup.exe','Clanarina-Demo-Portable.exe')) {
             $p = Join-Path $dest $name
             if (!(Test-Path $p) -or (Get-Item $p).Length -lt 100000) { throw "Missing or invalid: $name" }
           }
@@ -147,7 +166,7 @@ jobs:
         run: |
           set -euo pipefail
           cd release
-          for file in Clanarina-Android.apk Clanarina-Android.aab Clanarina-Setup.exe Clanarina-Portable.exe Clanarina-Full-Source.zip Clanarina-Web-Source.zip LICENSE-COMMERCIAL.txt; do
+          for file in Clanarina-Android.apk Clanarina-Android.aab Clanarina-Setup.exe Clanarina-Portable.exe Clanarina-Demo-Setup.exe Clanarina-Demo-Portable.exe Clanarina-Full-Source.zip Clanarina-Web-Source.zip LICENSE-COMMERCIAL.txt; do
             test -s "$file" || { echo "::error::Required artifact missing: $file"; exit 1; }
           done
           sha256sum Clanarina-* LICENSE-COMMERCIAL.txt ANDROID-SIGNING-STATUS.txt > SHA256SUMS.txt
@@ -158,5 +177,5 @@ jobs:
         run: |
           set -euo pipefail
           tag="v0.2.$GITHUB_RUN_NUMBER-dev"
-          printf '%s\n' 'DEVELOPMENT PRE-RELEASE: Not for real member or financial data.' 'See ANDROID-SIGNING-STATUS.txt; temporary Android keys are NOT Play production keys.' 'Windows binaries are not yet Authenticode signed.' 'Commercial EULA is a legal draft pending verification.' 'Pixel-perfect and full licensing integration remain unverified.' > release-notes.txt
+          printf '%s\n' 'DEVELOPMENT PRE-RELEASE: Not for real member or financial data.' 'See ANDROID-SIGNING-STATUS.txt; temporary Android keys are NOT Play production keys.' 'Windows binaries are not yet Authenticode signed.' 'Commercial EULA is a legal draft pending verification.' 'DEMO Setup and Portable have synthetic records, isolated database and no license-key prompt.' 'Pixel-perfect and full licensing integration remain unverified.' > release-notes.txt
           gh -R "$GITHUB_REPOSITORY" release create "$tag" release/* --target "$GITHUB_SHA" --title "Članarina $tag - APK AAB Portable Setup Source" --notes-file release-notes.txt --prerelease
