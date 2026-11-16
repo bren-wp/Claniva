@@ -59,32 +59,97 @@ import java.util.Locale
     onSave: (String, String, String) -> Unit
 ) {
     var selectedId by remember(kind) { mutableStateOf(members.firstOrNull()?.id.orEmpty()) }
+    var memberSearch by remember(kind) { mutableStateOf(members.firstOrNull()?.name.orEmpty()) }
+    var selectorExpanded by remember(kind) { mutableStateOf(false) }
     var amount by remember(kind) { mutableStateOf("") }
     var extra by remember(kind) { mutableStateOf("") }
     var message by remember(kind) { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onClose,
+        modifier = Modifier.imePadding(),
         title = { Text(if (kind == "charge") "Novo zaduženje" else "Nova uplata") },
         text = {
-            Column(Modifier.heightIn(max = 430.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Odaberite člana", fontWeight = FontWeight.SemiBold)
-                members.forEach { member ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(selected = selectedId == member.id, onClick = { selectedId = member.id })
-                        Text(member.name)
+            Column(
+                Modifier.fillMaxWidth().heightIn(max = 390.dp).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Searchable, bounded picker instead of a potentially unbounded
+                // RadioButton list that pushed the amount field below the dialog.
+                Box(Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = memberSearch,
+                        onValueChange = {
+                            memberSearch = it
+                            selectedId = ""
+                            selectorExpanded = true
+                            message = ""
+                        },
+                        label = { Text("Član") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        trailingIcon = {
+                            TextButton(onClick = { selectorExpanded = true }) {
+                                Text("Odaberi")
+                            }
+                        }
+                    )
+                    val matches = remember(memberSearch, members) {
+                        members.filter { it.name.contains(memberSearch, ignoreCase = true) }
+                    }
+                    DropdownMenu(
+                        expanded = selectorExpanded,
+                        onDismissRequest = { selectorExpanded = false },
+                        modifier = Modifier.heightIn(max = 260.dp)
+                    ) {
+                        if (matches.isEmpty()) {
+                            DropdownMenuItem(text = { Text("Nema odgovarajućih članova") },
+                                onClick = {}, enabled = false)
+                        } else {
+                            matches.take(50).forEach { member ->
+                                DropdownMenuItem(
+                                    text = { Text(member.name, maxLines = 1) },
+                                    onClick = {
+                                        selectedId = member.id
+                                        memberSearch = member.name
+                                        selectorExpanded = false
+                                    }
+                                )
+                            }
+                            if (matches.size > 50) {
+                                Text("Sužite pretragu za više rezultata",
+                                    modifier = Modifier.padding(12.dp),
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
                     }
                 }
-                OutlinedTextField(amount, onValueChange = { amount = it },
+                OutlinedTextField(
+                    amount,
+                    onValueChange = { amount = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
                     label = { Text("Iznos (€)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
-                OutlinedTextField(extra, onValueChange = { extra = it },
-                    label = { Text(if (kind == "charge") "Razdoblje (GGGG-MM)" else "Referenca (neobavezno)") })
-                if (message.isNotEmpty()) Text(message, color = MaterialTheme.colorScheme.error)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
+                OutlinedTextField(
+                    extra,
+                    onValueChange = { extra = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    label = { Text(if (kind == "charge") "Razdoblje (GGGG-MM)" else "Referenca (neobavezno)") }
+                )
+                if (message.isNotEmpty()) {
+                    Text(message, color = MaterialTheme.colorScheme.error)
+                }
             }
         },
         confirmButton = { TextButton(onClick = {
-            try { onSave(selectedId, amount, extra) }
+            try {
+                require(selectedId.isNotBlank() && members.any { it.id == selectedId }) {
+                    "Odaberite člana s popisa."
+                }
+                onSave(selectedId, amount, extra)
+            }
             catch (e: IllegalArgumentException) { message = e.message ?: "Provjerite iznos." }
             catch (e: Exception) { message = "Spremanje nije uspjelo. Provjerite iznos ili duplikate." }
         }) { Text("Spremi") } },
