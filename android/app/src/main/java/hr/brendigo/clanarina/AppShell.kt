@@ -34,6 +34,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
     var changes by remember { mutableIntStateOf(0) }
     val members=remember(changes) { db.listMembers() }
     val totals=remember(changes) { db.totals() }
+    val recentPayments=remember(changes) { db.ledger("payment").take(5) }
     Scaffold(
         topBar={ TopAppBar(
             title={
@@ -123,7 +124,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             )
             Spacer(Modifier.height(14.dp))
             when(page) {
-                "Početna" -> DashboardOverview(totals, members.isNotEmpty()) { page = it }
+                "Početna" -> DashboardOverview(totals, members.isNotEmpty(), recentPayments) { page = it }
                 "Članovi","Dugovanja" -> MemberManagement(db, page=="Dugovanja", changes) { changes++ }
                 "Članarine","Uplate" -> LedgerManagement(
                     db, if(page=="Članarine") "charge" else "payment", changes

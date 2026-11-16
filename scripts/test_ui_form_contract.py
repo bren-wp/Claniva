@@ -61,5 +61,12 @@ for spec in ("small:360x640:160", "normal:412x915:160", "tablet:800x1280:160"):
 win_app = (root / "windows/Claniva/App.xaml.cs").read_text(encoding="utf-8")
 assert 'CultureInfo.GetCultureInfo("hr-HR")' in win_app
 assert 'CultureInfo.DefaultThreadCurrentCulture = croatian' in win_app
-print("PASS: native form parity, brand-colored dialogs, 3 viewport galleries and hr-HR Windows locale")
+windows_view = (root / "windows/Claniva/MainWindow.Views.cs").read_text(encoding="utf-8")
+dashboard = (root / "android/app/src/main/java/hr/brendigo/clanarina/DashboardOverview.kt").read_text(encoding="utf-8")
+assert 'ShowRecentPayments();' in windows_view
+assert 'Ledger("payment").Take(5)' in windows_view
+assert 'recentPayments.forEachIndexed' in dashboard
+assert '"Posljednje uplate"' in dashboard and '"Posljednje uplate"' in windows_view
+assert 'db.ledger("payment").take(5)' in app
+print("PASS: native dialog colors, 3 screenshot viewports, locale and genuine latest-payment dashboard parity")
 print("NOTE: static UI contracts are not pixel-perfect screenshot certification")
