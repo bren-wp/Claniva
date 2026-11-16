@@ -152,7 +152,8 @@ import java.util.Locale
         },
         confirmButton = { TextButton(onClick = {
             try { onSave(name, group, email, active) }
-            catch (e: Exception) { message = e.message ?: "Podaci nisu spremljeni." }
+            catch (e: IllegalArgumentException) { message = e.message ?: "Provjerite podatke." }
+            catch (e: Exception) { message = "Podaci nisu spremljeni. Pokušajte ponovno." }
         }) { Text("Spremi") } },
         dismissButton = { TextButton(onClick = onClose) { Text("Odustani") } }
     )

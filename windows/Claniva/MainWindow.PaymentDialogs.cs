@@ -44,10 +44,15 @@ public sealed partial class MainWindow
             else _store.AddPayment(selected.Id, cents, extra.Text);
             Draw();
         }
+        catch (ArgumentException ex)
+        {
+            await Inform("Provjerite unos", ex.Message);
+        }
         catch (Exception ex)
         {
-            await Inform("Neuspjelo spremanje",
-                "Provjerite iznos, razdoblje i referencu. Ista stavka možda već postoji. " + ex.Message);
+            StartupDiagnostics.Record("ledger-save", ex);
+            await Inform("Spremanje nije uspjelo",
+                "Provjerite iznos, razdoblje i referencu. Ista stavka možda već postoji.");
         }
     }
 

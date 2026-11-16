@@ -9,16 +9,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import hr.brendigo.clanarina.data.LocalStore
 import hr.brendigo.clanarina.ui.Brand
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.util.Currency
 import java.util.Locale
 
 private val sections = listOf("Početna","Članovi","Članarine","Uplate","Dugovanja","Uplatnice","Bankovni izvodi","Izvještaji","Licenca","Postavke")
-private val euros = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hr-HR"))
+private val euros = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hr-HR")).apply {
+    currency = Currency.getInstance("EUR")
+}
 internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,15 +37,25 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
     Scaffold(
         topBar={ TopAppBar(
             title={
-                Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(10.dp)) {
-                    Image(painter=painterResource(id=R.drawable.brand_foreground),contentDescription="Logotip Članarina",
-                        modifier=Modifier.size(35.dp))
-                    Text("Članarina",fontWeight=FontWeight.Bold)
+                Row(
+                    modifier=Modifier.fillMaxWidth(),
+                    verticalAlignment=Alignment.CenterVertically,
+                    horizontalArrangement=Arrangement.spacedBy(8.dp)
+                ) {
+                    Image(
+                        painter=painterResource(id=R.drawable.brand_foreground),
+                        contentDescription="Logotip Članarina",
+                        modifier=Modifier.size(29.dp)
+                    )
+                    Text("Članarina",fontWeight=FontWeight.Bold,
+                        maxLines=1,overflow=TextOverflow.Ellipsis,fontSize=20.sp)
                 }
             },
             actions={
                 Box {
-                    TextButton(onClick={menu=true}) { Text("Moduli",color=Color.White) }
+                    IconButton(onClick={menu=true}) {
+                        Text("⋮",color=Color.White,fontSize=24.sp)
+                    }
                     DropdownMenu(expanded=menu,onDismissRequest={menu=false}) {
                         sections.forEach { name -> DropdownMenuItem(text={Text(name)},onClick={page=name;menu=false}) }
                     }
@@ -49,16 +64,27 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             colors=TopAppBarDefaults.topAppBarColors(containerColor=Brand.Navy,titleContentColor=Color.White)
         )},
         containerColor=Brand.Background,
-        bottomBar={ NavigationBar(containerColor=Color.White) {
-            listOf("Početna","Članovi","Uplate","Više").forEach { tab ->
-                NavigationBarItem(
-                    selected=(page==tab || (tab=="Više" && page !in listOf("Početna","Članovi","Uplate"))),
-                    onClick={if(tab=="Više") moreMenu=true else page=tab},
-                    icon={Text(when(tab){"Početna"->"⌂";"Članovi"->"○";"Uplate"->"✓";else->"⋯"},color=Brand.Navy)},
-                    label={Text(tab)}
-                )
+        bottomBar={
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                val compactLabels = maxWidth < 280.dp
+                NavigationBar(containerColor=Color.White) {
+                    listOf("Početna","Članovi","Uplate","Više").forEach { tab ->
+                        NavigationBarItem(
+                            selected=(page==tab ||
+                                (tab=="Više" && page !in listOf("Početna","Članovi","Uplate"))),
+                            onClick={if(tab=="Više") moreMenu=true else page=tab},
+                            icon={Text(when(tab){
+                                "Početna"->"⌂";"Članovi"->"○";"Uplate"->"✓";else->"⋯"
+                            },color=Brand.Navy)},
+                            label=if(compactLabels) null else ({
+                                Text(tab,maxLines=1,overflow=TextOverflow.Ellipsis)
+                            }),
+                            alwaysShowLabel=!compactLabels
+                        )
+                    }
+                }
             }
-        }}
+        }
     ) { inner ->
         Column(Modifier.fillMaxSize().padding(inner).padding(horizontal=12.dp)) {
             Spacer(Modifier.height(16.dp))

@@ -43,6 +43,91 @@ function Save-WindowCapture {
   }
 }
 
+
+# A native HWND can be visible before WinUI has painted the client area.
+# Reject blank captures rather than treating them as successful UI evidence.
+function Assert-RenderedCapture {
+  param([string]$Label)
+  $path = Join-Path $out (($Label -replace '[^A-Za-z0-9-]', '_') + '.png')
+  if (!(Test-Path $path)) { throw "$Label screenshot was not saved" }
+  Add-Type -AssemblyName System.Drawing
+  $bmp = [System.Drawing.Bitmap]::FromFile($path)
+  try {
+    $painted = 0
+    $stepX = [Math]::Max(16, [int]($bmp.Width / 16))
+    $stepY = [Math]::Max(16, [int]($bmp.Height / 14))
+    for ($y = 48; $y -lt ($bmp.Height - 16); $y += $stepY) {
+      for ($x = 16; $x -lt ($bmp.Width - 16); $x += $stepX) {
+        $pixel = $bmp.GetPixel($x, $y)
+        if ($pixel.R -lt 248 -or $pixel.G -lt 248 -or $pixel.B -lt 248) {
+          $painted++
+        }
+      }
+    }
+    if ($painted -lt 10) {
+      throw "$Label has an unpainted/blank client area (nonwhite samples=$painted)"
+    }
+    Add-Content $report "RENDERED: $Label nonwhite samples=$painted"
+  }
+  finally { $bmp.Dispose() }
+}
+
+function Wait-RenderedCapture {
+  param([IntPtr]$WindowHandle, [string]$Label, [string]$Kind = 'none')
+  $deadline = (Get-Date).AddSeconds(20)
+  $lastFailure = 'No screenshot captured'
+  $capturePath = Join-Path $out (($Label -replace '[^A-Za-z0-9-]', '_') + '.png')
+  do {
+    # Never reuse a successful old image when the current capture fails.
+    Remove-Item -Path $capturePath -Force -ErrorAction SilentlyContinue
+    Save-WindowCapture -WindowHandle $WindowHandle -Label $Label
+    try {
+      Assert-RenderedCapture -Label $Label
+      if ($Kind -ne 'none') {
+        Assert-ResponsiveCapture -Label $Label -Kind $Kind
+      }
+      Add-Content $report "PAINT PASS: $Label"
+      return
+    }
+    catch {
+      $lastFailure = $_.Exception.Message
+      Add-Content $report "RENDER PENDING: $lastFailure"
+      Start-Sleep -Milliseconds 800
+    }
+  } while ((Get-Date) -lt $deadline)
+  throw "$Label did not render a valid UI within 20 seconds: $lastFailure"
+}
+
+function Assert-ResponsiveCapture {
+  param([string]$Label, [string]$Kind)
+  $name = ($Label -replace '[^A-Za-z0-9-]', '_') + '.png'
+  $path = Join-Path $out $name
+  if (!(Test-Path $path)) { throw "$Label screenshot was not saved; visual regression cannot be verified" }
+  Add-Type -AssemblyName System.Drawing
+  $bmp = [System.Drawing.Bitmap]::FromFile($path)
+  try {
+    if ($Kind -eq 'wide' -and $bmp.Width -ge 900 -and $bmp.Height -ge 440) {
+      # A 900+ px window must show its expanded navy navigation at x=210,
+      # rather than a 48px strip with clipped white labels.
+      $sample = $bmp.GetPixel(210, 400)
+      if (($sample.R + $sample.G + $sample.B) -gt 450) {
+        throw "$Label pane is not expanded/navy at width $($bmp.Width): RGB=$($sample.R),$($sample.G),$($sample.B)"
+      }
+      Add-Content $report "VISUAL PASS: expanded pane at $($bmp.Width)px"
+    }
+    if ($Kind -eq 'minimal' -and $bmp.Width -le 580 -and $bmp.Height -ge 300) {
+      # On narrow windows the menu button must not overlap the gold DEMO
+      # banner; the content's top gap remains background, not the banner.
+      $sample = $bmp.GetPixel(65, 55)
+      if ($sample.R -gt 220 -and $sample.G -gt 200 -and $sample.G -lt 240 -and $sample.B -lt 200) {
+        throw "$Label DEMO banner overlaps minimal menu region: RGB=$($sample.R),$($sample.G),$($sample.B)"
+      }
+      Add-Content $report "VISUAL PASS: minimal menu top padding at $($bmp.Width)px"
+    }
+  }
+  finally { $bmp.Dispose() }
+}
+
 $process = $null
 try {
   $process = Start-Process -FilePath $exe -WorkingDirectory $workdir -PassThru
@@ -140,8 +225,9 @@ public static class ClanarinaWindowProbe {
     throw "$ArtifactName started maximized or fullscreen ($($width)x$($height))"
   }
   Add-Content $report "Window title=$title hwnd=$hwnd pid=$windowPid size=$($width)x$($height)"
-  Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-default"
-  foreach ($size in @(@(840, 620), @(560, 440))) {
+  Wait-RenderedCapture -WindowHandle $hwnd -Label "$ArtifactName-default" -Kind "wide"
+  # Include a width between the 740px compact and 660px minimal transitions.
+  foreach ($size in @(@(840, 620), @(700, 540), @(560, 440))) {
     $w = [Math]::Min($size[0], [Math]::Max(350, $screenW - 100))
     $h = [Math]::Min($size[1], [Math]::Max(300, $screenH - 100))
     if (-not [ClanarinaWindowProbe]::MoveWindow($hwnd, 40, 40, $w, $h, $true)) {
@@ -153,7 +239,8 @@ public static class ClanarinaWindowProbe {
       throw "$ArtifactName crashed or lost its main window after resize to $($w)x$($h)"
     }
     Add-Content $report "PASS resized to $($w)x$($h)"
-    Save-WindowCapture -WindowHandle $hwnd -Label "$ArtifactName-$($w)x$($h)"
+    $kind = if ($w -le 580) { 'minimal' } else { 'none' }
+    Wait-RenderedCapture -WindowHandle $hwnd -Label "$ArtifactName-$($w)x$($h)" -Kind $kind
   }
   $product = if ($ArtifactName -match 'Demo') { 'ClanarinaDemo' } else { 'Clanarina' }
   $startupLog = Join-Path $env:LOCALAPPDATA "$product\logs\startup.log"

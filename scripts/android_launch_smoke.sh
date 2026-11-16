@@ -39,7 +39,10 @@ restore_display() {
   adb shell wm density reset >/dev/null 2>&1 || true
 }
 trap restore_display EXIT
-for spec in "small:360x640:320" "normal:412x915:360" "tablet:800x1280:320"; do
+# Use viewport/density pairs that exercise actual logical widths in dp:
+# 360px@160dpi=360dp, 412px@160dpi=412dp, 800px@160dpi=800dp.
+# Also stress an intentionally tiny 180dp viewport for extreme font/zoom.
+for spec in "small:360x640:160" "normal:412x915:160" "tablet:800x1280:160" "compact:360x640:320"; do
   IFS=: read -r label size dpi <<< "$spec"
   adb shell wm size "$size"
   adb shell wm density "$dpi"

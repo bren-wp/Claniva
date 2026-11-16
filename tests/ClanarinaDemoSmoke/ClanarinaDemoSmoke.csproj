@@ -9,5 +9,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0" />
     <Compile Include="../../windows/Claniva/Data/DemoData.cs" Link="DemoData.cs" />
+    <Compile Include="../../windows/Claniva/Data/LocalStore.Money.cs" Link="LocalStore.Money.cs" />
   </ItemGroup>
 </Project>

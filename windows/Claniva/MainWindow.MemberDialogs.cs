@@ -62,6 +62,15 @@ public sealed partial class MainWindow
             else _store.UpdateMember(member.Id, name.Text, group.Text, email.Text, active.IsChecked == true);
             Draw();
         }
-        catch (Exception ex) { await Inform("Neuspjelo spremanje", ex.Message); }
+        catch (ArgumentException ex)
+        {
+            await Inform("Provjerite podatke", ex.Message);
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.Record("member-save", ex);
+            await Inform("Spremanje nije uspjelo",
+                "Član nije spremljen. Provjerite dostupnost lokalne baze i pokušajte ponovno.");
+        }
     }
 }

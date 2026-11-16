@@ -31,7 +31,7 @@ internal fun DashboardOverview(
         )
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             val columns=when {
-                maxWidth < 400.dp -> 1
+                maxWidth < 320.dp -> 1
                 maxWidth < 820.dp -> 2
                 else -> 3
             }

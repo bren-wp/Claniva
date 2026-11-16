@@ -33,12 +33,30 @@ for key in ["NavigationViewExpandedPaneBackground", "NavigationViewDefaultPaneBa
     assert key in win, f"Missing navigation theme resource {key}"
 assert 'Background = new SolidColorBrush(BrandPalette.Background)' in win
 assert 'Navigation.SelectedItem = navigationItem' in win
+assert 'ExpandedModeThresholdWidth = 900' in win
+assert 'CompactModeThresholdWidth = 660' in win
+assert 'Icon = NavigationIcon(tag)' in win and 'ToolTipService.SetToolTip(item, name)' in win
+assert 'new Thickness(14, 62, 14, 24)' in views, "Minimal nav header must not overlap DEMO/banner"
+assert 'private static FontIcon NavigationIcon' in win
+assert '_lastMinimal != minimal' in win, "A 740 -> 660dp transition must trigger re-render"
+assert '_lastMinimal = Navigation.ActualWidth < 660' in views
+smoke = (r/"scripts/windows_launch_smoke.ps1").read_text(encoding="utf-8")
+assert 'function Assert-RenderedCapture' in smoke and 'function Wait-RenderedCapture' in smoke
+assert '@(700, 540)' in smoke, "The compact-to-minimal transition needs a runtime check"
+money = (r/"windows/Claniva/Data/LocalStore.Money.cs").read_text(encoding="utf-8")
+assert 'CurrencySymbol = "€"' in money, "Windows currency must not revert to HRK"
+assert 'Currency.getInstance("EUR")' in android, "Android currency must explicitly be EUR"
+
 assert 'shortcuts.Children.Add(Action("Novo zaduženje", AddCharge_Click))' in views
 assert 'shortcuts.Children.Add(Action("Nova uplata", AddPayment_Click))' in views
 assert "members.Take(_visibleMembers)" in (r/"windows/Claniva/MainWindow.Members.cs").read_text(encoding="utf-8")
 for label in ["Članovi","Zaduženo","Evidentirano","Dugovanja","Preplate"]:
     assert f'Metric("{label}"' in views, f"Missing Windows card {label}"
     assert f'Triple("{label}"' in dashboard, f"Missing Android card {label}"
+assert 'maxWidth < 320.dp -> 1' in dashboard, "Typical phones should receive two KPI columns"
+assert 'val compactLabels = maxWidth < 280.dp' in android
+assert 'maxLines=1,overflow=TextOverflow.Ellipsis' in android
+assert '"small:360x640:160" "normal:412x915:160"' in (r/"scripts/android_launch_smoke.sh").read_text(encoding="utf-8")
 assert "ModalBottomSheet" in android and 'moreMenu=true' in android, "The More tab must open navigation"
 assert "new SolidColorBrush(BrandPalette.White)" in controls
 assert 'MemberManagement' in android and 'LedgerManagement' in android
