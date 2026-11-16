@@ -54,12 +54,13 @@ for spec in "small:360x640:160" "normal:412x915:160" "tablet:800x1280:160" "comp
   adb shell screencap -p "/sdcard/Clanarina-$label.png"
   adb pull "/sdcard/Clanarina-$label.png" "$OUT/$label.png" >/dev/null
   test -s "$OUT/$label.png"
+
+  # Capture every implemented module at phone and tablet viewports.
+  # A missing or failed capture is a regression. Pixel parity still requires
+  # independent, approved baseline PNGs for the same density and font scale.
+  if [[ "$label" == "small" || "$label" == "normal" || "$label" == "tablet" ]]; then
+    python3 scripts/android_capture_screens.py --strict --out "$OUT/screens"
+  fi
 done
 
-# Capture every currently navigable native screen at a stable logical phone width.
-# The per-screen coverage report is evidence, never an approved golden baseline.
-adb shell wm size 412x915
-adb shell wm density 160
-sleep 2
-python3 scripts/android_capture_screens.py --out "$OUT/screens"
-echo "PASS: actual emulator Activity started twice, remained alive and generated module coverage evidence."
+echo "PASS: emulator launches twice and all ten screens + form validation are captured at three viewport sizes."
