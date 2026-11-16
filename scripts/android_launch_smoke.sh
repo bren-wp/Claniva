@@ -56,4 +56,10 @@ for spec in "small:360x640:160" "normal:412x915:160" "tablet:800x1280:160" "comp
   test -s "$OUT/$label.png"
 done
 
-echo "PASS: actual emulator Activity started twice and remained alive; screenshots captured."
+# Capture every currently navigable native screen at a stable logical phone width.
+# The per-screen coverage report is evidence, never an approved golden baseline.
+adb shell wm size 412x915
+adb shell wm density 160
+sleep 2
+python3 scripts/android_capture_screens.py --out "$OUT/screens"
+echo "PASS: actual emulator Activity started twice, remained alive and generated module coverage evidence."
