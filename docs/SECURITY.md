@@ -35,3 +35,26 @@ Za Android je postavljen targetSdk 36. Prije objave potrebno je provjeriti Play 
 - audit biblioteka i license compliance;
 - stvarni emulator/device testovi i pixel-accurate vizualne usporedbe;
 - odvojene produkcijske verzije Play i direktni APK ako to zahtijeva model naplate.
+
+
+## Pre-migration safety for the Windows development builds (16. 11. 2026.)
+
+A Windows Full or DEMO database with SQLite `user_version < 2` is now checked
+with `PRAGMA quick_check` and copied via SQLite's online backup API before
+any schema migration. The source and verified snapshot preserve committed
+transactions, including changes held in WAL. Upgrading a database from a
+**newer** schema version is refused without modifying its records.
+
+- Full: `%LOCALAPPDATA%\\Clanarina\\data\\backups\\`
+- DEMO: `%LOCALAPPDATA%\\ClanarinaDemo\\data\\backups\\`
+
+The snapshot uses a unique filename and is not deleted automatically.
+A new snapshot is not created every time an already migrated v2 database
+is opened. Recovery tests use disposable test data, check counts and sums,
+restore the snapshot to a **different** directory and re-run migration.
+
+**Important:** these snapshots are still **unencrypted SQLite files**.
+They are an anti-data-loss safeguard, not a completed privacy or production
+security measure. Do not upload them publicly. A verified encryption key
+management model, encrypted backup format, Android-side pre-upgrade recovery,
+production restore UI and real-device tests remain outstanding.
