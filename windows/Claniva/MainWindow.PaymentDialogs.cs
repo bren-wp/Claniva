@@ -24,13 +24,16 @@ public sealed partial class MainWindow
         var choice = new ComboBox
         {
             Header = "Član", ItemsSource = members, DisplayMemberPath = "Name",
-            SelectedIndex = 0, MinWidth = 260
+            SelectedIndex = 0, HorizontalAlignment = HorizontalAlignment.Stretch,
+            MaxDropDownHeight = 260, IsTextSearchEnabled = true
         };
-        var amount = new TextBox { Header = "Iznos (€)", PlaceholderText = "25,00" };
+        var amount = new TextBox { Header = "Iznos (€)", PlaceholderText = "25,00",
+            HorizontalAlignment = HorizontalAlignment.Stretch };
         var extra = new TextBox
         {
             Header = charge ? "Razdoblje (GGGG-MM)" : "Referenca (neobavezno)",
-            PlaceholderText = charge ? "2026-11" : "Npr. UPLATA-001"
+            PlaceholderText = charge ? "2026-11" : "Npr. UPLATA-001",
+            HorizontalAlignment = HorizontalAlignment.Stretch
         };
         var fields = new StackPanel { Spacing = 12 };
         fields.Children.Add(choice); fields.Children.Add(amount); fields.Children.Add(extra);

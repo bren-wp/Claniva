@@ -27,3 +27,32 @@ Za svaki ekran i stanje (normalno, prazno, validacijska greška, popunjeno, moda
 ## Windows Demo
 
 Za svaki Windows ekran DEMO mora imati zasebnu referentnu PNG sliku, jasno vidljivu DEMO oznaku, izmišljene članove i uplate te raditi bez ključa. Popis izvora mora zasebno razlikovati Windows full i Windows demo. Trenutačna matrica pokriva 600 kombinacija (40 ekrana × 5 stanja × 3 varijante). One su nedokazane sve dok stvarni screenshotovi ne prođu usporedbu.
+
+
+## Prioritized native form QA — 16. 11. 2026.
+
+The Windows payment dialog now avoids a fixed 260px member selector and
+supports type-to-select within a bounded dropdown. Android charge/payment
+dialogs use a bounded searchable member picker, verify that the chosen
+member exists, and adjust for the soft keyboard. Android member inputs
+fill their dialog's width and limit detail history rendering to 50 entries.
+
+These are **implemented layout changes**, not approved 1:1 comparisons.
+The inventory remains 600 states with no approved baseline/capture pair
+certified pixel-perfect. Next captures should cover Windows Full/DEMO
+payment and member dialogs at 560px, 700px and default desktop widths;
+Android dialogs at 360dp, 412dp and tablet size with keyboard open,
+validation error, empty list, and 50+ members.
+
+## Stvarne native snimke i ikonografija — 16. 11. 2026.
+
+Iz CI artefakta Windows 2022 (`windows-startup-evidence-windows-2022`)
+potvrđeno je 10/10 stvarnih PNG snimki Full WinUI modula. Snimke imaju
+status `captured-unverified`; nemaju odobrene referentne PNG slike, pa
+**nisu** pixel-perfect potvrda.
+
+Pregled je otkrio pogrešno mapiranje Segoe MDL2 glifova. Zaduženja su sada
+označena kalendarskim simbolom (`E8BF`), evidentirane uplate platnom
+karticom (`E8C7`), a bankovni izvodi simbolom banke (`E825`).
+Automatizirane galerije prikupljaju zasebno 10 modula Windows Full/DEMO
+te 10 Android modula, uz izvještaj o nedostajućim kadrovima.

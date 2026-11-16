@@ -49,30 +49,31 @@ public sealed partial class MainWindow
         return b;
     }
 
-    private static StackPanel Metric(string title, string amount, Color accent)
+    private static Grid Metric(string title, string amount, Color accent)
     {
-        var card = new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-            Spacing = 14,
-            VerticalAlignment = VerticalAlignment.Center,
-            MinHeight = 64
-        };
-        card.Children.Add(new Border
+        // A horizontal StackPanel measures TextBlocks with unbounded width.
+        // A two-column Grid constrains long EUR amounts to the actual card.
+        var card = new Grid { ColumnSpacing = 14, MinHeight = 64 };
+        card.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5) });
+        card.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        var accentBar = new Border
         {
             Background = new SolidColorBrush(accent),
-            Width = 5, Height = 64, CornerRadius = new CornerRadius(4)
-        });
-        var content = new StackPanel
-        {
-            Spacing = 7, VerticalAlignment = VerticalAlignment.Center
+            Width = 5, Height = 64, CornerRadius = new CornerRadius(4),
+            VerticalAlignment = VerticalAlignment.Center
         };
+        Grid.SetColumn(accentBar, 0);
+        card.Children.Add(accentBar);
+
+        var content = new StackPanel { Spacing = 7, VerticalAlignment = VerticalAlignment.Center };
         var label = Text(title, 14);
         label.Foreground = new SolidColorBrush(BrandPalette.Muted);
         content.Children.Add(label);
         var value = Text(amount, 22, true);
         value.Foreground = new SolidColorBrush(BrandPalette.Navy);
+        value.TextWrapping = TextWrapping.WrapWholeWords;
         content.Children.Add(value);
+        Grid.SetColumn(content, 1);
         card.Children.Add(content);
         return card;
     }

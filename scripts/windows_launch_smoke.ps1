@@ -226,6 +226,12 @@ public static class ClanarinaWindowProbe {
   }
   Add-Content $report "Window title=$title hwnd=$hwnd pid=$windowPid size=$($width)x$($height)"
   Wait-RenderedCapture -WindowHandle $hwnd -Label "$ArtifactName-default" -Kind "wide"
+  # Capture all currently implemented modules on native full and demo builds.
+  # Package Setup/Portable jobs continue their shorter startup-only smoke check.
+  if ($ArtifactName -in @('FullWinUI', 'DemoWinUI')) {
+    . "$PSScriptRoot/windows_capture_screens.ps1"
+    Capture-WindowsModuleScreens -WindowHandle $hwnd -ArtifactName $ArtifactName -OutputFolder $out
+  }
   # Include a width between the 740px compact and 660px minimal transitions.
   foreach ($size in @(@(840, 620), @(700, 540), @(560, 440))) {
     $w = [Math]::Min($size[0], [Math]::Max(350, $screenW - 100))

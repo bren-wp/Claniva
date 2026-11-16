@@ -35,7 +35,7 @@ internal fun DashboardOverview(
                 maxWidth < 820.dp -> 2
                 else -> 3
             }
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 metrics.chunked(columns).forEach { row ->
                     Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
                         row.forEach { (label,value,color) ->

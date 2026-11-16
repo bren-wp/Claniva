@@ -12,7 +12,7 @@ public sealed partial class MainWindow
 {
     private void ShowFilter()
     {
-        var compact = Navigation.ActualWidth < 740;
+        var compact = (ContentScroller?.ActualWidth ?? 0) < 920;
         var row = new StackPanel
         {
             Orientation = compact ? Orientation.Vertical : Orientation.Horizontal,
@@ -52,7 +52,7 @@ public sealed partial class MainWindow
             return;
         }
         var list = new StackPanel { Spacing = 9 };
-        var compact = Navigation.ActualWidth < 740;
+        var compact = (ContentScroller?.ActualWidth ?? 0) < 920;
         foreach (var member in members.Take(_visibleMembers))
         {
             var m = member;
