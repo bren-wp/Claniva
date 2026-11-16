@@ -56,6 +56,9 @@ assert 'title = { Text("Detalji člana") }' in android_member
 assert 'label = { Text("Pretraži ime ili grupu") }' in android_member
 smoke = (root / "scripts/android_launch_smoke.sh").read_text(encoding="utf-8")
 assert 'python3 scripts/android_capture_screens.py --strict' in smoke
+for marker in ("dismiss_launcher_anr", "Pixel Launcher", "com.google.android.apps.nexuslauncher"):
+    assert marker in capture, f"Strict Android capture missing guarded system-overlay recovery: {marker}"
+assert '"hr.brendigo.clanarina/.MainActivity"' in capture
 for spec in ("small:360x640:160", "normal:412x915:160", "tablet:800x1280:160"):
     assert spec in smoke, f"Missing viewport capture profile: {spec}"
 win_app = (root / "windows/Claniva/App.xaml.cs").read_text(encoding="utf-8")
