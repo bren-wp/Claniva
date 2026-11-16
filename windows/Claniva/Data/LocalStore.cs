@@ -10,22 +10,41 @@ namespace Claniva.Data;
 public sealed partial class LocalStore
 {
     private readonly string _connectionString;
-    public LocalStore()
-    {
-        var folder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            #if DEMO_BUILD
-            "ClanarinaDemo", "data");
+
+    public LocalStore() : this(Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+#if DEMO_BUILD
+        "ClanarinaDemo", "data"))
 #else
-            "Clanarina", "data");
+        "Clanarina", "data"))
 #endif
+    {
+    }
+
+    // Internal overload allows migration tests to use an isolated temporary database.
+    internal LocalStore(string folder)
+    {
         Directory.CreateDirectory(folder);
+        var databasePath = Path.Combine(folder, "clanarina.db");
+        var existingDatabase = File.Exists(databasePath) && new FileInfo(databasePath).Length > 0;
         _connectionString = new SqliteConnectionStringBuilder
         {
-            DataSource = Path.Combine(folder, "clanarina.db"),
+            DataSource = databasePath,
             Mode = SqliteOpenMode.ReadWriteCreate
         }.ToString();
+
         using var db = Connect();
+        using (var versionCommand = db.CreateCommand())
+        {
+            versionCommand.CommandText = "PRAGMA user_version;";
+            var schemaVersion = Convert.ToInt32(versionCommand.ExecuteScalar());
+            if (schemaVersion > 2)
+                throw new InvalidOperationException(
+                    "Baza pripada novijoj verziji aplikacije. Nijedan podatak nije promijenjen.");
+            if (existingDatabase && schemaVersion < 2)
+                CreateVerifiedPreMigrationBackup(db, folder);
+        }
+
         using (var journal = db.CreateCommand())
         {
             journal.CommandText = "PRAGMA journal_mode=WAL;";
