@@ -21,6 +21,10 @@ private val colors = lightColorScheme(
     primary=Brand.Blue, secondary=Brand.Teal, background=Brand.Background,
     surface=Color.White, onSurface=Brand.Ink, onBackground=Brand.Ink,
     onPrimary=Color.White, onSecondary=Brand.Navy,
+    surfaceContainer=Color.White, surfaceContainerLow=Color.White,
+    surfaceContainerHigh=Color.White, surfaceContainerHighest=Color.White,
+    onSurfaceVariant=Brand.Muted, outline=Brand.Stroke,
+    outlineVariant=Brand.Stroke, surfaceTint=Color.White,
     error=Brand.Danger
 )
 @Composable fun ClanarinaTheme(content: @Composable () -> Unit) {
