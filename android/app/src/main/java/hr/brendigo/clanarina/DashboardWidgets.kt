@@ -16,17 +16,17 @@ import hr.brendigo.clanarina.ui.Brand
 @Composable
 internal fun StatCard(title:String, value:String, accent:Color, modifier:Modifier=Modifier) {
     Card(
-        modifier=modifier.padding(vertical=4.dp).heightIn(min=104.dp),
+        modifier=modifier.heightIn(min=96.dp),
         shape=RoundedCornerShape(16.dp),
         border=BorderStroke(1.dp,Brand.Stroke),
         colors=CardDefaults.cardColors(containerColor=Color.White)
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(horizontal=16.dp, vertical=18.dp),
+            Modifier.fillMaxWidth().padding(horizontal=16.dp, vertical=16.dp),
             verticalAlignment=Alignment.CenterVertically,
             horizontalArrangement=Arrangement.spacedBy(14.dp)
         ) {
-            Box(Modifier.width(5.dp).height(66.dp).background(accent, RoundedCornerShape(4.dp)))
+            Box(Modifier.width(5.dp).height(64.dp).background(accent, RoundedCornerShape(4.dp)))
             Column(verticalArrangement=Arrangement.spacedBy(7.dp)) {
                 Text(title, color=Brand.Muted,
                     style=MaterialTheme.typography.bodyMedium,
@@ -47,6 +47,6 @@ internal fun Empty(text:String) {
         border=BorderStroke(1.dp,Brand.Stroke),
         colors=CardDefaults.cardColors(containerColor=Color.White)
     ) {
-        Text(text, Modifier.padding(20.dp), color=Brand.Ink)
+        Text(text, Modifier.padding(16.dp), color=Brand.Ink)
     }
 }

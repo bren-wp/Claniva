@@ -113,6 +113,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             Text(
                 if (page == "Početna") "Nadzorna ploča" else page,
                 style=MaterialTheme.typography.headlineMedium,
+                fontSize=30.sp,
                 fontWeight=FontWeight.Bold,
                 color=Brand.Navy
             )

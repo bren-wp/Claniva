@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import hr.brendigo.clanarina.data.LedgerEntry
 import hr.brendigo.clanarina.data.LocalStore
 import hr.brendigo.clanarina.data.Member
@@ -57,13 +58,14 @@ import java.util.Locale
                 colors=CardDefaults.cardColors(containerColor=Color.White)
             ) {
                 Column(
-                    Modifier.fillMaxWidth().padding(horizontal=16.dp, vertical=12.dp),
-                    verticalArrangement=Arrangement.spacedBy(5.dp)
+                    Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement=Arrangement.spacedBy(8.dp)
                 ) {
                     Text(member.name, fontWeight=FontWeight.Bold,color=Brand.Navy,
-                        style=MaterialTheme.typography.titleMedium)
+                        fontSize=18.sp, style=MaterialTheme.typography.titleMedium)
                     Text("Grupa: " + member.group.ifBlank { "Bez grupe" },
-                        color=Brand.Muted,style=MaterialTheme.typography.bodySmall)
+                        color=Brand.Muted,fontSize=13.sp,
+                        style=MaterialTheme.typography.bodySmall)
                     Text("Zaduženo: " + euroAmount(member.dueCents) +
                         "  ·  Evidentirano: " + euroAmount(member.paidCents),
                         color=Brand.Ink,style=MaterialTheme.typography.bodyMedium)

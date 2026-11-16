@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import hr.brendigo.clanarina.data.LedgerEntry
 import hr.brendigo.clanarina.data.LocalStore
 import hr.brendigo.clanarina.data.Member
@@ -166,17 +167,17 @@ import java.util.Locale
     ) {
         Column(
             Modifier.fillMaxWidth().padding(16.dp),
-            verticalArrangement=Arrangement.spacedBy(6.dp)
+            verticalArrangement=Arrangement.spacedBy(7.dp)
         ) {
             Text(item.memberName,color=Brand.Navy,fontWeight=FontWeight.Bold,
-                style=MaterialTheme.typography.titleMedium)
+                fontSize=17.sp,style=MaterialTheme.typography.titleMedium)
             Text(euroAmount(item.amountCents),color=Brand.Ink,
-                fontWeight=FontWeight.Bold,style=MaterialTheme.typography.titleLarge)
+                fontWeight=FontWeight.Bold,fontSize=21.sp,style=MaterialTheme.typography.titleLarge)
             Text((if (item.kind == "charge") "Razdoblje: " else "Referenca: ") +
                 item.extra.ifBlank { "Nije navedeno" },
                 color=Brand.Ink,style=MaterialTheme.typography.bodyMedium)
             Text(item.createdAt,color=Brand.Muted,
-                style=MaterialTheme.typography.bodySmall)
+                fontSize=13.sp,style=MaterialTheme.typography.bodySmall)
         }
     }
 }
