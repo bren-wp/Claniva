@@ -30,5 +30,9 @@ for metric in ("Članovi", "Zaduženo", "Evidentirano", "Dugovanja", "Preplate")
 capture = (root / "scripts/android_capture_screens.py").read_text(encoding="utf-8")
 assert "captured-unverified" in capture and "approvedPixelBaseline" in capture
 assert "android_capture_screens.py" in (root / "scripts/android_launch_smoke.sh").read_text(encoding="utf-8")
-print("PASS: Android/WinUI compact forms, vector nav, aligned report metrics, per-screen capture coverage")
+win_capture = (root / "scripts/windows_capture_screens.ps1").read_text(encoding="utf-8")
+assert win_capture.count("Id='") == 10, "Native WinUI gallery must cover every navigable module"
+assert "approvedPixelBaseline=$false" in win_capture, "Capture reports must never imply an approved baseline"
+assert "Capture-WindowsModuleScreens" in (root / "scripts/windows_launch_smoke.ps1").read_text(encoding="utf-8")
+print("PASS: native compact forms, vector navigation, report labels and Windows/Android ten-screen gallery")
 print("NOTE: static UI contracts are not pixel-perfect screenshot certification")
