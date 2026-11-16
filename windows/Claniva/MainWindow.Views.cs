@@ -87,6 +87,7 @@ public sealed partial class MainWindow
                 quick.Children.Add(shortcuts);
                 PageContent.Children.Add(Panel(quick));
                 ShowMembers(_store.Members().Take(8).ToList(), false);
+                ShowRecentPayments();
                 break;
             case "members":
                 PageContent.Children.Add(Action("+ Novi član", AddMember_Click));
@@ -137,5 +138,41 @@ public sealed partial class MainWindow
 #endif
                 break;
         }
+    }
+
+    /// <summary>Real recorded payments, never a fabricated chart or bank confirmation.</summary>
+    private void ShowRecentPayments()
+    {
+        var list = _store.Ledger("payment").Take(5).ToList();
+        var content = new StackPanel { Spacing = 10 };
+        content.Children.Add(Text("Posljednje uplate", 18, true));
+        if (list.Count == 0)
+        {
+            var empty = Text("Još nema evidentiranih uplata.", 14);
+            empty.Foreground = new SolidColorBrush(BrandPalette.Muted);
+            content.Children.Add(empty);
+        }
+        else
+        {
+            foreach (var payment in list)
+            {
+                var row = new Grid { ColumnSpacing = 12 };
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                var details = new StackPanel { Spacing = 4 };
+                details.Children.Add(Text(payment.MemberName, 14, true));
+                var date = Text(payment.CreatedAt, 12);
+                date.Foreground = new SolidColorBrush(BrandPalette.Muted);
+                details.Children.Add(date);
+                Grid.SetColumn(details, 0);
+                row.Children.Add(details);
+                var amount = Text(LocalStore.Money(payment.AmountCents), 16, true);
+                amount.Foreground = new SolidColorBrush(BrandPalette.Navy);
+                Grid.SetColumn(amount, 1);
+                row.Children.Add(amount);
+                content.Children.Add(row);
+            }
+        }
+        PageContent.Children.Add(Panel(content));
     }
 }

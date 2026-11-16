@@ -34,6 +34,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
     var changes by remember { mutableIntStateOf(0) }
     val members=remember(changes) { db.listMembers() }
     val totals=remember(changes) { db.totals() }
+    val recentPayments=remember(changes) { db.ledger("payment").take(5) }
     Scaffold(
         topBar={ TopAppBar(
             title={
@@ -60,7 +61,11 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
                             tint = Color.White
                         )
                     }
-                    DropdownMenu(expanded=menu,onDismissRequest={menu=false}) {
+                    DropdownMenu(
+                        expanded=menu,
+                        onDismissRequest={menu=false},
+                        containerColor=Color.White
+                    ) {
                         sections.forEach { name -> DropdownMenuItem(text={Text(name)},onClick={page=name;menu=false}) }
                     }
                 }
@@ -119,7 +124,7 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             )
             Spacer(Modifier.height(14.dp))
             when(page) {
-                "Početna" -> DashboardOverview(totals, members.isNotEmpty()) { page = it }
+                "Početna" -> DashboardOverview(totals, members.isNotEmpty(), recentPayments) { page = it }
                 "Članovi","Dugovanja" -> MemberManagement(db, page=="Dugovanja", changes) { changes++ }
                 "Članarine","Uplate" -> LedgerManagement(
                     db, if(page=="Članarine") "charge" else "payment", changes
@@ -147,7 +152,11 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
         }
     }
     if (moreMenu) {
-        ModalBottomSheet(onDismissRequest={moreMenu=false}) {
+        ModalBottomSheet(
+            onDismissRequest={moreMenu=false},
+            containerColor=Color.White,
+            contentColor=Brand.Ink
+        ) {
             Text("Svi moduli", style=MaterialTheme.typography.titleLarge,
                 modifier=Modifier.padding(horizontal=20.dp, vertical=10.dp), color=Brand.Navy)
             sections.filter { it !in listOf("Početna","Članovi","Uplate") }.forEach { name ->

@@ -13,3 +13,14 @@ Provjera konkretnih slika: python3 scripts/visual_audit.py --reference ref.png -
 Potreban je Python Pillow paket za obradu PNG slika. Kod ne mijenja reference niti izmišlja rezultate. Dizajn na desktopu i mobitelu ima zasebne odobrene reference: identičnost značajki i stilova ne znači isti fizički raspored na različitim veličinama zaslona.
 
 Demo je treći profil sa zasebnim referencama za svaki zaslon i stanje, jer sadrži DEMO oznaku i izmišljene podatke. Nije dopušteno koristiti screenshot pune aplikacije kao referencu za Demo.
+
+
+### Aktualni screenshot QA
+
+Android emulator CI mora generirati `screens/360x640/`,
+`screens/412x915/` i `screens/800x1280/`, sa svih 10
+navigacijskih zaslona, `member-new-dialog.png`,
+`member-validation-error.png` i `coverage.json`.
+`--strict` blokira izvješće ako snimanje nekoga od njih ne uspije.
+Windows Full/DEMO nastavljaju izvoziti svoje navigacijske PNG-ove
+po OS profilu. `captured-unverified` ne znači `pixel-perfect`.

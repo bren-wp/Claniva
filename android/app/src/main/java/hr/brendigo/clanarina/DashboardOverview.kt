@@ -12,11 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import hr.brendigo.clanarina.data.Totals
+import hr.brendigo.clanarina.data.LedgerEntry
 import hr.brendigo.clanarina.ui.Brand
 
 @Composable
 internal fun DashboardOverview(
-    totals: Totals, hasMembers: Boolean, openPage: (String) -> Unit
+    totals: Totals, hasMembers: Boolean, recentPayments: List<LedgerEntry>,
+    openPage: (String) -> Unit
 ) {
     Column(
         Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -89,6 +91,42 @@ internal fun DashboardOverview(
                             OutlinedButton(
                                 onClick={ openPage("Uplate") },enabled=hasMembers
                             ) { Text("Uplate") }
+                        }
+                    }
+                }
+            }
+        }
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, Brand.Stroke),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text("Posljednje uplate", color = Brand.Navy,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium)
+                if (recentPayments.isEmpty()) {
+                    Text("Još nema evidentiranih uplata.", color = Brand.Muted)
+                } else {
+                    recentPayments.forEachIndexed { index, payment ->
+                        if (index > 0) HorizontalDivider(color = Brand.Stroke)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(payment.memberName, color = Brand.Ink,
+                                    fontWeight = FontWeight.SemiBold)
+                                Text(payment.createdAt, color = Brand.Muted,
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
+                            Text(euro(payment.amountCents), color = Brand.Navy,
+                                fontWeight = FontWeight.Bold)
                         }
                     }
                 }

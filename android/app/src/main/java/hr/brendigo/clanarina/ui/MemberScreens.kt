@@ -39,7 +39,7 @@ import java.util.Locale
     if (!debtsOnly) Button(onClick = { adding = true }) { Text("+ Novi član") }
     OutlinedTextField(search, onValueChange = { search = it },
         modifier = Modifier.fillMaxWidth(), singleLine = true,
-        label = { Text("Pretraži članove i grupe") })
+        label = { Text("Pretraži ime ili grupu") })
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(checked = activeOnly, onCheckedChange = { activeOnly = it })
         Text("Samo aktivni")
@@ -100,13 +100,20 @@ import java.util.Locale
             val payments = remember(revision, member.id) { db.ledger("payment", member.id) }
             AlertDialog(
                 onDismissRequest = { showingDetails = null },
-                title = { Text(member.name) },
+                containerColor = Color.White,
+                titleContentColor = Brand.Navy,
+                textContentColor = Brand.Ink,
+                shape = RoundedCornerShape(20.dp),
+                title = { Text("Detalji člana") },
                 text = {
                     Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {
+                        Text(member.name, color = Brand.Navy,
+                            fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.height(8.dp))
                         Text("Grupa: " + member.group.ifBlank { "Bez grupe" })
                         Text("E-mail: " + member.email.ifBlank { "Nije unesen" })
-                        Text("Zaduženja: " + euroAmount(member.dueCents))
-                        Text("Uplate: " + euroAmount(member.paidCents))
+                        Text("Zaduženo: " + euroAmount(member.dueCents))
+                        Text("Uplaćeno: " + euroAmount(member.paidCents))
                         Text("Dug: " + euroAmount(member.debtCents))
                         Text("Preplata: " + euroAmount(member.creditCents))
                         HorizontalDivider(Modifier.padding(vertical = 8.dp))
@@ -141,6 +148,10 @@ import java.util.Locale
     AlertDialog(
         onDismissRequest = onClose,
         modifier = Modifier.imePadding(),
+        containerColor = Color.White,
+        titleContentColor = Brand.Navy,
+        textContentColor = Brand.Ink,
+        shape = RoundedCornerShape(20.dp),
         title = { Text(if (member == null) "Novi član" else "Uredi člana") },
         text = {
             Column(Modifier.heightIn(max = 390.dp).verticalScroll(rememberScrollState()),
@@ -151,7 +162,7 @@ import java.util.Locale
                     singleLine = true, label = { Text("Grupa") })
                 OutlinedTextField(email, onValueChange = { email = it }, modifier = Modifier.fillMaxWidth(),
                     singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    label = { Text("E-mail") })
+                    label = { Text("E-mail (neobavezno)") })
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = active, onCheckedChange = { active = it })
                     Text("Aktivan član")

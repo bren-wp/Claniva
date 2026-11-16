@@ -68,6 +68,10 @@ import java.util.Locale
     AlertDialog(
         onDismissRequest = onClose,
         modifier = Modifier.imePadding(),
+        containerColor = Color.White,
+        titleContentColor = Brand.Navy,
+        textContentColor = Brand.Ink,
+        shape = RoundedCornerShape(20.dp),
         title = { Text(if (kind == "charge") "Novo zaduženje" else "Nova uplata") },
         text = {
             Column(
@@ -100,6 +104,7 @@ import java.util.Locale
                     DropdownMenu(
                         expanded = selectorExpanded,
                         onDismissRequest = { selectorExpanded = false },
+                        containerColor = Color.White,
                         modifier = Modifier.heightIn(max = 260.dp)
                     ) {
                         if (matches.isEmpty()) {
