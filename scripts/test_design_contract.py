@@ -38,6 +38,9 @@ assert 'CompactModeThresholdWidth = 660' in win
 assert 'ContentScroller?.ActualWidth' in win, "KPI columns must follow content viewport, not full window"
 assert 'width < 440 ? 1 : width < 720 ? 2 : width < 1100 ? 3 : 5' in win
 assert 'ContentScroller.SizeChanged' in win, "Viewport changes must reflow KPI cards"
+assert 'new Grid { ColumnSpacing = 14, MinHeight = 64 }' in controls
+assert 'GridUnitType.Star' in controls, "KPI texts need bounded grid columns"
+assert 'TextWrapping.WrapWholeWords' in controls
 assert 'Icon = NavigationIcon(tag)' in win and 'ToolTipService.SetToolTip(item, name)' in win
 assert 'new Thickness(14, 62, 14, 24)' in views, "Minimal nav header must not overlap DEMO/banner"
 assert 'private static FontIcon NavigationIcon' in win

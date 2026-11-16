@@ -27,7 +27,10 @@ internal fun StatCard(title:String, value:String, accent:Color, modifier:Modifie
             horizontalArrangement=Arrangement.spacedBy(14.dp)
         ) {
             Box(Modifier.width(5.dp).height(64.dp).background(accent, RoundedCornerShape(4.dp)))
-            Column(verticalArrangement=Arrangement.spacedBy(7.dp)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement=Arrangement.spacedBy(7.dp)
+            ) {
                 Text(title, color=Brand.Muted,
                     style=MaterialTheme.typography.bodyMedium,
                     fontWeight=FontWeight.Medium)
