@@ -41,5 +41,25 @@ for invariant in ("heightIn(min=96.dp)", "width(5.dp).height(64.dp)",
     assert invariant in widgets, f"Shared card dimension diverged: {invariant}"
 assert "Column(verticalArrangement = Arrangement.spacedBy(12.dp))" in overview
 assert "fontSize=30.sp" in app, "Dashboard heading typography diverged from WinUI"
-print("PASS: native compact forms, vector navigation, KPI/card parity and ten-screen galleries")
+brand = (root / "android/app/src/main/java/hr/brendigo/clanarina/ui/BrandTheme.kt").read_text(encoding="utf-8")
+for color in ("surfaceContainer=Color.White", "surfaceContainerHigh=Color.White",
+              "surfaceContainerHighest=Color.White", "onSurfaceVariant=Brand.Muted",
+              "outline=Brand.Stroke"):
+    assert color in brand, f"Android dialog theme reverted to default purple/gray: {color}"
+for source in (android_member, android_ledger):
+    assert 'containerColor = Color.White' in source
+    assert 'titleContentColor = Brand.Navy' in source
+    assert 'textContentColor = Brand.Ink' in source
+    assert 'shape = RoundedCornerShape(20.dp)' in source
+assert 'label = { Text("E-mail (neobavezno)") }' in android_member
+assert 'title = { Text("Detalji člana") }' in android_member
+assert 'label = { Text("Pretraži ime ili grupu") }' in android_member
+smoke = (root / "scripts/android_launch_smoke.sh").read_text(encoding="utf-8")
+assert 'python3 scripts/android_capture_screens.py --strict' in smoke
+for spec in ("small:360x640:160", "normal:412x915:160", "tablet:800x1280:160"):
+    assert spec in smoke, f"Missing viewport capture profile: {spec}"
+win_app = (root / "windows/Claniva/App.xaml.cs").read_text(encoding="utf-8")
+assert 'CultureInfo.GetCultureInfo("hr-HR")' in win_app
+assert 'CultureInfo.DefaultThreadCurrentCulture = croatian' in win_app
+print("PASS: native form parity, brand-colored dialogs, 3 viewport galleries and hr-HR Windows locale")
 print("NOTE: static UI contracts are not pixel-perfect screenshot certification")

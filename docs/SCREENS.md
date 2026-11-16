@@ -56,3 +56,31 @@ označena kalendarskim simbolom (`E8BF`), evidentirane uplate platnom
 karticom (`E8C7`), a bankovni izvodi simbolom banke (`E825`).
 Automatizirane galerije prikupljaju zasebno 10 modula Windows Full/DEMO
 te 10 Android modula, uz izvještaj o nedostajućim kadrovima.
+
+
+## Iteracija: vizualna dosljednost nativnih zaslona (16. 11. 2026.)
+
+Nakon spojenog PR-a #9, izdanje `v0.2.108-dev` u CI-ju je snimilo:
+- 10/10 postojećih Android navigacijskih modula pri profilu 412×915 i
+  dva stanja dijaloga novog člana;
+- 10/10 postojećih Windows Full te 10/10 Windows DEMO navigacijskih modula.
+
+Pregled tih PNG-ova pokazao je Androidove defaultne ljubičasto-sive
+površine dijaloga. Nova iteracija prisilno koristi bijelu površinu,
+tamnoplavi naslov i robusnu ČLANARINA shemu boja na svim trenutačnim
+dijalozima članova, uplata, padajućih izbornika i listova modula.
+Android detalji članova sada koriste ista polja, nazive i redoslijed
+kao WinUI 3, a Windows izvođenje koristi `hr-HR` jezični profil
+neovisno o jeziku CI računala.
+
+Android runtime snimke svih 10 navigacijskih modula i validacijskog
+dijaloga obvezne su u tri fizička profila:
+`360×640 @160 dpi`, `412×915 @160 dpi`, `800×1280 @160 dpi`.
+Na ekstremno uskom `180 dp` profilu dodatno se provjerava preživljavanje
+procesa, ali ne postoji odobren 1:1 baseline.
+
+Ovi su profili CI dokazi stvarnog renderiranja, **ne vizualne reference**.
+Niti jedna od 600 kombinacija ne smije dobiti oznaku 1:1 bez odobrenog
+referentnog PNG-a istog OS-a/DPI-ja, kontroliranih fontova i uspješne
+usporedbe svakog piksela. Pojedini moduli iz manifesta još su planirani,
+a ne implementirani, i moraju ostati označeni kao `unverified`.
