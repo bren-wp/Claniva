@@ -100,6 +100,10 @@ import java.util.Locale
             val payments = remember(revision, member.id) { db.ledger("payment", member.id) }
             AlertDialog(
                 onDismissRequest = { showingDetails = null },
+                containerColor = Color.White,
+                titleContentColor = Brand.Navy,
+                textContentColor = Brand.Ink,
+                shape = RoundedCornerShape(20.dp),
                 title = { Text(member.name) },
                 text = {
                     Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {
@@ -141,6 +145,10 @@ import java.util.Locale
     AlertDialog(
         onDismissRequest = onClose,
         modifier = Modifier.imePadding(),
+        containerColor = Color.White,
+        titleContentColor = Brand.Navy,
+        textContentColor = Brand.Ink,
+        shape = RoundedCornerShape(20.dp),
         title = { Text(if (member == null) "Novi član" else "Uredi člana") },
         text = {
             Column(Modifier.heightIn(max = 390.dp).verticalScroll(rememberScrollState()),

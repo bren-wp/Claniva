@@ -60,7 +60,11 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
                             tint = Color.White
                         )
                     }
-                    DropdownMenu(expanded=menu,onDismissRequest={menu=false}) {
+                    DropdownMenu(
+                        expanded=menu,
+                        onDismissRequest={menu=false},
+                        containerColor=Color.White
+                    ) {
                         sections.forEach { name -> DropdownMenuItem(text={Text(name)},onClick={page=name;menu=false}) }
                     }
                 }
@@ -147,7 +151,11 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
         }
     }
     if (moreMenu) {
-        ModalBottomSheet(onDismissRequest={moreMenu=false}) {
+        ModalBottomSheet(
+            onDismissRequest={moreMenu=false},
+            containerColor=Color.White,
+            contentColor=Brand.Ink
+        ) {
             Text("Svi moduli", style=MaterialTheme.typography.titleLarge,
                 modifier=Modifier.padding(horizontal=20.dp, vertical=10.dp), color=Brand.Navy)
             sections.filter { it !in listOf("Početna","Članovi","Uplate") }.forEach { name ->
