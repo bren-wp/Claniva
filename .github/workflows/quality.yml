@@ -13,6 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify brand tokens and static links
         run: python3 scripts/check_assets.py
+      - name: Check 21-page SEO and keyboard accessibility contract
+        run: python3 scripts/test_site_seo.py
       - name: Verify native brand parity and full screen audit inventory
         run: |
           python3 scripts/brand_parity.py
