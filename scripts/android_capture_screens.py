@@ -101,7 +101,36 @@ def capture(path):
     return len(data)
 
 
+def dismiss_launcher_anr():
+    """Recover only an unrelated Pixel Launcher ANR on disposable CI emulators.
+
+    Never dismiss or ignore a Članarina crash/error dialog. If the launcher
+    overlay keeps returning, the following navigation assertion still fails.
+    """
+    nodes = window_tree()
+    labels = " ".join(
+        (node.attrib.get("text", "") + " " + node.attrib.get("content-desc", ""))
+        for node in nodes
+    )
+    is_launcher = "Pixel Launcher" in labels or "com.google.android.apps.nexuslauncher" in labels
+    is_anr = "isn't responding" in labels or "not responding" in labels or "ne odgovara" in labels
+    if not (is_launcher and is_anr):
+        return False
+    print("EMULATOR SYSTEM ANR: Pixel Launcher only; recovering and reopening app", flush=True)
+    adb("shell", "am", "force-stop", "com.google.android.apps.nexuslauncher")
+    time.sleep(1)
+    adb("shell", "am", "start", "-n", "hr.brendigo.clanarina/.MainActivity")
+    time.sleep(2)
+    return True
+
+
 def navigate(section, expected, width, height):
+    # Some API 35 Google-APIs emulators raise a launcher-not-responding dialog
+    # after wm size/density changes. This is not a failure of our app, but it
+    # masks all ten accessible navigation entries; dismiss only that exact ANR.
+    for _ in range(2):
+        if not dismiss_launcher_anr():
+            break
     nodes = window_tree()
     overflow = find_node(nodes, "Otvori sve module")
     if overflow is not None:
