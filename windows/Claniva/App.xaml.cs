@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using System.Globalization;
 
 namespace Claniva;
 
@@ -29,6 +30,15 @@ public partial class App : Application
     {
         try
         {
+            // This iteration ships a Croatian-only UI. Match the declared
+            // hr-HR visual QA profile independently of the Windows runner locale.
+            // Once language switching is implemented, this becomes a persisted
+            // per-installation setting rather than a hardcoded default.
+            var croatian = CultureInfo.GetCultureInfo("hr-HR");
+            CultureInfo.DefaultThreadCurrentCulture = croatian;
+            CultureInfo.DefaultThreadCurrentUICulture = croatian;
+            CultureInfo.CurrentCulture = croatian;
+            CultureInfo.CurrentUICulture = croatian;
             _window = new MainWindow();
             _window.Activate();
             StartupDiagnostics.MarkReady();
