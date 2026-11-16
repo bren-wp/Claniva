@@ -109,10 +109,12 @@ import java.util.Locale
                         Text("Preplata: " + euroAmount(member.creditCents))
                         HorizontalDivider(Modifier.padding(vertical = 8.dp))
                         Text("Zaduženja (" + charges.size + ")", fontWeight = FontWeight.Bold)
-                        charges.forEach { Text(it.extra.ifBlank { "Bez razdoblja" } + " · " + euroAmount(it.amountCents)) }
+                        charges.take(50).forEach { Text(it.extra.ifBlank { "Bez razdoblja" } + " · " + euroAmount(it.amountCents)) }
+                        if (charges.size > 50) Text("Prikazano prvih 50 zaduženja.")
                         Spacer(Modifier.height(12.dp))
                         Text("Uplate (" + payments.size + ")", fontWeight = FontWeight.Bold)
-                        payments.forEach { Text(it.extra.ifBlank { "Bez reference" } + " · " + euroAmount(it.amountCents)) }
+                        payments.take(50).forEach { Text(it.extra.ifBlank { "Bez reference" } + " · " + euroAmount(it.amountCents)) }
+                        if (payments.size > 50) Text("Prikazano prvih 50 uplata.")
                     }
                 },
                 confirmButton = { TextButton(onClick = {
@@ -136,13 +138,18 @@ import java.util.Locale
     var message by remember(member?.id) { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onClose,
+        modifier = Modifier.imePadding(),
         title = { Text(if (member == null) "Novi član" else "Uredi člana") },
         text = {
             Column(Modifier.heightIn(max = 390.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                OutlinedTextField(name, onValueChange = { name = it }, label = { Text("Ime i prezime") })
-                OutlinedTextField(group, onValueChange = { group = it }, label = { Text("Grupa") })
-                OutlinedTextField(email, onValueChange = { email = it }, label = { Text("E-mail") })
+                OutlinedTextField(name, onValueChange = { name = it }, modifier = Modifier.fillMaxWidth(),
+                    singleLine = true, label = { Text("Ime i prezime") })
+                OutlinedTextField(group, onValueChange = { group = it }, modifier = Modifier.fillMaxWidth(),
+                    singleLine = true, label = { Text("Grupa") })
+                OutlinedTextField(email, onValueChange = { email = it }, modifier = Modifier.fillMaxWidth(),
+                    singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    label = { Text("E-mail") })
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = active, onCheckedChange = { active = it })
                     Text("Aktivan član")
