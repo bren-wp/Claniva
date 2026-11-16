@@ -54,7 +54,11 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
             actions={
                 Box {
                     IconButton(onClick={menu=true}) {
-                        Text("⋮",color=Color.White,fontSize=24.sp)
+                        Icon(
+                            painter = painterResource(R.drawable.nav_more),
+                            contentDescription = "Otvori sve module",
+                            tint = Color.White
+                        )
                     }
                     DropdownMenu(expanded=menu,onDismissRequest={menu=false}) {
                         sections.forEach { name -> DropdownMenuItem(text={Text(name)},onClick={page=name;menu=false}) }
@@ -67,15 +71,33 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
         bottomBar={
             BoxWithConstraints(Modifier.fillMaxWidth()) {
                 val compactLabels = maxWidth < 280.dp
-                NavigationBar(containerColor=Color.White) {
+                NavigationBar(containerColor=Color.White, tonalElevation=0.dp) {
                     listOf("Početna","Članovi","Uplate","Više").forEach { tab ->
                         NavigationBarItem(
                             selected=(page==tab ||
                                 (tab=="Više" && page !in listOf("Početna","Članovi","Uplate"))),
                             onClick={if(tab=="Više") moreMenu=true else page=tab},
-                            icon={Text(when(tab){
-                                "Početna"->"⌂";"Članovi"->"○";"Uplate"->"✓";else->"⋯"
-                            },color=Brand.Navy)},
+                            icon={
+                                Icon(
+                                    painter = painterResource(
+                                        when(tab) {
+                                            "Početna" -> R.drawable.nav_home
+                                            "Članovi" -> R.drawable.nav_members
+                                            "Uplate" -> R.drawable.nav_payments
+                                            else -> R.drawable.nav_more
+                                        }
+                                    ),
+                                    contentDescription = tab,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = Brand.Blue,
+                                selectedTextColor = Brand.Navy,
+                                unselectedIconColor = Brand.Muted,
+                                unselectedTextColor = Brand.Muted,
+                                indicatorColor = Brand.Background
+                            ),
                             label=if(compactLabels) null else ({
                                 Text(tab,maxLines=1,overflow=TextOverflow.Ellipsis)
                             }),
@@ -88,7 +110,12 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
     ) { inner ->
         Column(Modifier.fillMaxSize().padding(inner).padding(horizontal=12.dp)) {
             Spacer(Modifier.height(16.dp))
-            Text(page,style=MaterialTheme.typography.headlineMedium,fontWeight=FontWeight.Bold)
+            Text(
+                if (page == "Početna") "Nadzorna ploča" else page,
+                style=MaterialTheme.typography.headlineMedium,
+                fontWeight=FontWeight.Bold,
+                color=Brand.Navy
+            )
             Spacer(Modifier.height(14.dp))
             when(page) {
                 "Početna" -> DashboardOverview(totals, members.isNotEmpty()) { page = it }
@@ -97,11 +124,16 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
                     db, if(page=="Članarine") "charge" else "payment", changes
                 ) { changes++ }
                 "Izvještaji" -> Column(Modifier.verticalScroll(rememberScrollState())) {
-                    StatCard("Broj članova",totals.members.toString(),Brand.Blue)
-                    StatCard("Zaduženja",euro(totals.chargedCents),Brand.Gold)
-                    StatCard("Evidentirane uplate",euro(totals.paidCents),Brand.Teal)
-                    StatCard("Nepodmireno",euro(totals.outstandingCents),Brand.Danger)
+                    StatCard("Članovi",totals.members.toString(),Brand.Blue)
+                    StatCard("Zaduženo",euro(totals.chargedCents),Brand.Gold)
+                    StatCard("Evidentirano",euro(totals.paidCents),Brand.Teal)
+                    StatCard("Dugovanja",euro(totals.outstandingCents),Brand.Danger)
                     StatCard("Preplate",euro(totals.creditCents),Brand.Blue)
+                    Text(
+                        "Evidentirane uplate nisu automatski bankovno potvrđene. Dugovi i preplate računaju se po pojedinom članu.",
+                        color = Brand.Muted,
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
                 "Licenca" -> Empty("Online i offline aktivacija licence još nije povezana s aplikacijom.")
                 "Uplatnice" -> Empty("HUB-3 i EPC QR još nisu implementirani ni verificirani.")
