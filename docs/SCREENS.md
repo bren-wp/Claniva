@@ -43,3 +43,16 @@ certified pixel-perfect. Next captures should cover Windows Full/DEMO
 payment and member dialogs at 560px, 700px and default desktop widths;
 Android dialogs at 360dp, 412dp and tablet size with keyboard open,
 validation error, empty list, and 50+ members.
+
+## Stvarne native snimke i ikonografija — 16. 11. 2026.
+
+Iz CI artefakta Windows 2022 (`windows-startup-evidence-windows-2022`)
+potvrđeno je 10/10 stvarnih PNG snimki Full WinUI modula. Snimke imaju
+status `captured-unverified`; nemaju odobrene referentne PNG slike, pa
+**nisu** pixel-perfect potvrda.
+
+Pregled je otkrio pogrešno mapiranje Segoe MDL2 glifova. Zaduženja su sada
+označena kalendarskim simbolom (`E8BF`), evidentirane uplate platnom
+karticom (`E8C7`), a bankovni izvodi simbolom banke (`E825`).
+Automatizirane galerije prikupljaju zasebno 10 modula Windows Full/DEMO
+te 10 Android modula, uz izvještaj o nedostajućim kadrovima.

@@ -159,11 +159,11 @@ public sealed partial class MainWindow : Window
         {
             "dashboard" => "\uE80F", // Home
             "members" => "\uE716", // People
-            "dues" => "\uE8D4", // Payment
-            "payments" => "\uE8F1", // Cash
+            "dues" => "\uE8BF", // CalendarDay: recurring dues
+            "payments" => "\uE8C7", // PaymentCard
             "debts" => "\uE783", // Warning
             "slips" => "\uE8A5", // Document
-            "bank" => "\uE80B", // World / bank records
+            "bank" => "\uE825", // Bank
             "reports" => "\uE9D9", // Analytics
             "license" => "\uE8D7", // Lock
             "settings" => "\uE713", // Settings
