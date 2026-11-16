@@ -38,7 +38,7 @@ import java.util.Locale
     Spacer(Modifier.height(10.dp))
     Text(if (kind == "charge") "Povijest članarina" else "Povijest evidentiranih uplata",
         fontWeight = FontWeight.Bold)
-    if (ledger.isEmpty()) Notice("Još nema evidentiranih stavki.")
+    if (ledger.isEmpty()) Notice("Nema evidentiranih transakcija.")
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(ledger, key = { it.id }) { entry -> LedgerItem(entry) }
     }

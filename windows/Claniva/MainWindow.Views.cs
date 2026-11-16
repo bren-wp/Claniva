@@ -99,10 +99,12 @@ public sealed partial class MainWindow
                 break;
             case "dues":
                 PageContent.Children.Add(Action("+ Novo zaduženje", AddCharge_Click));
+                PageContent.Children.Add(Text("Povijest članarina", 18, true));
                 ShowLedger(_store.Ledger("charge"), true);
                 break;
             case "payments":
                 PageContent.Children.Add(Action("+ Nova uplata", AddPayment_Click));
+                PageContent.Children.Add(Text("Povijest evidentiranih uplata", 18, true));
                 ShowLedger(_store.Ledger("payment"), false);
                 break;
             case "reports":
@@ -122,7 +124,7 @@ public sealed partial class MainWindow
                 PageContent.Children.Add(Panel(Text("DEMO ne zahtijeva licencni ključ. Koristi se samo za predstavljanje aplikacije.")));
 #else
                 PageContent.Children.Add(Panel(Text(
-                    "Online i ručna offline aktivacija još nisu integrirane u Windows aplikaciju.")));
+                    "Online i ručna offline aktivacija licence još nisu integrirane u aplikaciju.")));
 #endif
                 break;
             case "settings":

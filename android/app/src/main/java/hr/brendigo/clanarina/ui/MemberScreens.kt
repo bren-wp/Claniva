@@ -48,7 +48,7 @@ import java.util.Locale
         (!debtsOnly || it.debtCents > 0L) && (!activeOnly || it.active) &&
             (it.name.contains(search, ignoreCase = true) || it.group.contains(search, ignoreCase = true))
     }
-    if (filtered.isEmpty()) Notice("Nema članova koji odgovaraju filtru.")
+    if (filtered.isEmpty()) Notice("Nema članova koji odgovaraju odabranom filtru.")
     LazyColumn(verticalArrangement=Arrangement.spacedBy(10.dp), contentPadding=PaddingValues(bottom=18.dp)) {
         items(filtered, key = { it.id }) { member ->
             Card(

@@ -124,7 +124,10 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
                 "Članarine","Uplate" -> LedgerManagement(
                     db, if(page=="Članarine") "charge" else "payment", changes
                 ) { changes++ }
-                "Izvještaji" -> Column(Modifier.verticalScroll(rememberScrollState())) {
+                "Izvještaji" -> Column(
+                    Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     StatCard("Članovi",totals.members.toString(),Brand.Blue)
                     StatCard("Zaduženo",euro(totals.chargedCents),Brand.Gold)
                     StatCard("Evidentirano",euro(totals.paidCents),Brand.Teal)
@@ -136,9 +139,9 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
-                "Licenca" -> Empty("Online i offline aktivacija licence još nije povezana s aplikacijom.")
-                "Uplatnice" -> Empty("HUB-3 i EPC QR još nisu implementirani ni verificirani.")
-                "Bankovni izvodi" -> Empty("Uvoz i usklađivanje bankovnih izvoda još nisu implementirani.")
+                "Licenca" -> Empty("Online i ručna offline aktivacija licence još nisu integrirane u aplikaciju.")
+                "Uplatnice" -> Empty("HUB-3 / EPC QR još nisu implementirani ni verificirani. Nisu dostupni za stvarne uplate.")
+                "Bankovni izvodi" -> Empty("Siguran uvoz i usklađivanje CAMT.053/CSV izvoda još nisu dovršeni.")
                 "Postavke" -> Empty("Lokalna SQLite pohrana. Bez računa, clouda i praćenja korisnika.")
             }
         }
