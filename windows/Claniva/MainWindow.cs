@@ -13,6 +13,7 @@ public sealed partial class MainWindow : Window
     private readonly LocalStore _store;
     private NavigationView Navigation = null!;
     private StackPanel PageContent = null!;
+    private ScrollViewer ContentScroller = null!;
     private string _module = "dashboard";
     private string _query = "";
     private bool _activeOnly;
@@ -38,6 +39,12 @@ public sealed partial class MainWindow : Window
 #endif
         ConfigureInitialWindowBounds();
         _ready = true;
+        ContentScroller.SizeChanged += (_, _) =>
+        {
+            if (!_ready || (_module != "dashboard" && _module != "reports")) return;
+            if (DashboardColumns() != _lastLayoutColumns)
+                Draw();
+        };
         Navigation.SizeChanged += (_, _) =>
         {
             if (!_ready) return;
@@ -125,7 +132,7 @@ public sealed partial class MainWindow : Window
             Spacing = 14,
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
-        Navigation.Content = new ScrollViewer
+        ContentScroller = new ScrollViewer
         {
             Background = new SolidColorBrush(BrandPalette.Background),
             Content = PageContent,
@@ -133,6 +140,7 @@ public sealed partial class MainWindow : Window
             HorizontalScrollMode = ScrollMode.Disabled,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto
         };
+        Navigation.Content = ContentScroller;
         var host = new Grid
         {
             Background = new SolidColorBrush(BrandPalette.Background)
@@ -212,8 +220,13 @@ public sealed partial class MainWindow : Window
 
     private int DashboardColumns()
     {
-        var width = Navigation?.ActualWidth ?? 0;
-        return width < 470 ? 1 : width < 760 ? 2 : width < 1060 ? 3 : 5;
+        // The window width includes the 236px navigation pane. Use the actual
+        // scroll viewport, otherwise five KPI cards are squeezed into the
+        // narrower content area and their large euro values can overlap.
+        var width = ContentScroller?.ActualWidth ?? 0;
+        if (width <= 0)
+            width = Math.Max(320, (Navigation?.ActualWidth ?? 0) - 236);
+        return width < 440 ? 1 : width < 720 ? 2 : width < 1100 ? 3 : 5;
     }
 
     private void NavigateTo(string tag)
