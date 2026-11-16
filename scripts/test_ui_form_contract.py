@@ -34,5 +34,12 @@ win_capture = (root / "scripts/windows_capture_screens.ps1").read_text(encoding=
 assert win_capture.count("Id='") == 10, "Native WinUI gallery must cover every navigable module"
 assert "approvedPixelBaseline=$false" in win_capture, "Capture reports must never imply an approved baseline"
 assert "Capture-WindowsModuleScreens" in (root / "scripts/windows_launch_smoke.ps1").read_text(encoding="utf-8")
-print("PASS: native compact forms, vector navigation, report labels and Windows/Android ten-screen gallery")
+widgets = (root / "android/app/src/main/java/hr/brendigo/clanarina/DashboardWidgets.kt").read_text(encoding="utf-8")
+overview = (root / "android/app/src/main/java/hr/brendigo/clanarina/DashboardOverview.kt").read_text(encoding="utf-8")
+for invariant in ("heightIn(min=96.dp)", "width(5.dp).height(64.dp)",
+                  "padding(horizontal=16.dp, vertical=16.dp)", "Modifier.padding(16.dp)"):
+    assert invariant in widgets, f"Shared card dimension diverged: {invariant}"
+assert "Column(verticalArrangement = Arrangement.spacedBy(12.dp))" in overview
+assert "fontSize=30.sp" in app, "Dashboard heading typography diverged from WinUI"
+print("PASS: native compact forms, vector navigation, KPI/card parity and ten-screen galleries")
 print("NOTE: static UI contracts are not pixel-perfect screenshot certification")
