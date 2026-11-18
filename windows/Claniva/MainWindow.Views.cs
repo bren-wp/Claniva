@@ -16,6 +16,7 @@ public sealed partial class MainWindow
         PageContent.Children.Clear();
         _lastCompact = Navigation.ActualWidth < 740;
         _lastMinimal = Navigation.ActualWidth < 660;
+        _lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 760;
         // In Minimal mode the hamburger overlays the content header.
         // Reserve its 48-pixel command region instead of letting it cover DEMO.
         PageContent.Padding = _lastMinimal == true
