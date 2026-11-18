@@ -52,7 +52,7 @@ public sealed partial class MainWindow
             var rowCount = (4 + columnCount - 1) / columnCount;
             for (int i = 0; i < rowCount; i++)
                 metrics.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-            var condensed = columnCount == 4 && ContentScroller.ActualWidth < 860;
+            var condensed = columnCount == 4;
             var cards = new[]
             {
                 Metric("Članovi", summary.Members.ToString(), BrandPalette.Blue, condensed),
