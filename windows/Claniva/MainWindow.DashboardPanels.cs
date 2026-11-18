@@ -19,9 +19,15 @@ public sealed partial class MainWindow
         var status = Panel(BuildCollectionStatus(summary));
         var wide = (ContentScroller?.ActualWidth ?? 0) >= 760;
         var row = new Grid { ColumnSpacing = 14, RowSpacing = 14 };
-        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        row.ColumnDefinitions.Add(new ColumnDefinition
+        {
+            Width = new GridLength(wide ? 1.6 : 1, GridUnitType.Star)
+        });
         if (wide)
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            });
         row.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         if (!wide)
             row.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
