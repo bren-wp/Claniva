@@ -16,7 +16,7 @@ public sealed partial class MainWindow
         PageContent.Children.Clear();
         _lastCompact = Navigation.ActualWidth < 740;
         _lastMinimal = Navigation.ActualWidth < 660;
-        _lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 760;
+        _lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 640;
         // In Minimal mode the hamburger overlays the content header.
         // Reserve its 48-pixel command region instead of letting it cover DEMO.
         PageContent.Padding = _lastMinimal == true
@@ -52,12 +52,13 @@ public sealed partial class MainWindow
             var rowCount = (4 + columnCount - 1) / columnCount;
             for (int i = 0; i < rowCount; i++)
                 metrics.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            var condensed = columnCount == 4 && ContentScroller.ActualWidth < 860;
             var cards = new[]
             {
-                Metric("Članovi", summary.Members.ToString(), BrandPalette.Blue),
-                Metric("Zaduženo", LocalStore.Money(summary.ChargedCents), BrandPalette.Gold),
-                Metric("Evidentirano", LocalStore.Money(summary.PaidCents), BrandPalette.Teal),
-                Metric("Dugovanja", LocalStore.Money(summary.OutstandingCents), BrandPalette.Danger)
+                Metric("Članovi", summary.Members.ToString(), BrandPalette.Blue, condensed),
+                Metric("Zaduženo", LocalStore.Money(summary.ChargedCents), BrandPalette.Gold, condensed),
+                Metric("Evidentirano", LocalStore.Money(summary.PaidCents), BrandPalette.Teal, condensed),
+                Metric("Dugovanja", LocalStore.Money(summary.OutstandingCents), BrandPalette.Danger, condensed)
             };
             for (int i = 0; i < cards.Length; i++)
             {
