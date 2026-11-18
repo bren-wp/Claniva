@@ -44,7 +44,7 @@ public sealed partial class MainWindow : Window
         {
             if (!_ready || (_module != "dashboard" && _module != "reports")) return;
             if (DashboardColumns() != _lastLayoutColumns ||
-                _lastAnalyticsWide != (ContentScroller.ActualWidth >= 760))
+                _lastAnalyticsWide != (ContentScroller.ActualWidth >= 640))
                 Draw();
         };
         Navigation.SizeChanged += (_, _) =>
@@ -230,7 +230,7 @@ public sealed partial class MainWindow : Window
         var width = ContentScroller?.ActualWidth ?? 0;
         if (width <= 0)
             width = Math.Max(320, (Navigation?.ActualWidth ?? 0) - 236);
-        return width < 380 ? 1 : width < 680 ? 2 : width < 840 ? 3 : 4;
+        return width < 340 ? 1 : width < 620 ? 2 : 4;
     }
 
     private void NavigateTo(string tag)
