@@ -94,7 +94,27 @@ try
     }
     if (Count(futureFile, "PRAGMA user_version") != 3)
         throw new Exception("Future-schema database was modified");
-    Console.WriteLine("PASS: v1 backup, integrity, v2 migration, idempotence, restore, future-schema guard");
+    // Dashboard graphs must reflect actual recorded payments and member-level debt,
+    // not synthetic percentage values from a marketing mockup.
+    var example = new Summary(2, 10000, 8000, 3500, 1500);
+    if (Math.Abs(DashboardAnalytics.CoveredPercent(example) - 65.0) > 0.001)
+        throw new Exception("Debt coverage did not respect per-member outstanding balances");
+    if (DashboardAnalytics.CoveredPercent(new Summary(0, 0, 0, 0, 0)) != 0 ||
+        DashboardAnalytics.CoveredPercent(new Summary(1, 5000, 9000, 0, 4000)) != 100)
+        throw new Exception("Zero-charge or overpayment status incorrect");
+    var clock = new DateTime(2026, 11, 18);
+    var samples = new[]
+    {
+        new LedgerEntry("p1", "m1", "Test", 2500, "", "", "2026-11-10 13:20:00", "payment"),
+        new LedgerEntry("p2", "m1", "Test", 1500, "", "", "2026-10-03 10:05:00", "payment"),
+        new LedgerEntry("c1", "m1", "Test", 9000, "", "", "2026-11-12 00:00:00", "charge"),
+        new LedgerEntry("p3", "m1", "Test", 900, "", "", "2026-03-01 00:00:00", "payment")
+    };
+    var months = DashboardAnalytics.LastSixMonths(samples, clock);
+    if (months.Count != 6 || months[5].Cents != 2500 ||
+        months[4].Cents != 1500 || months.Take(4).Any(x => x.Cents != 0))
+        throw new Exception("Six-month monthly payment aggregation is incorrect");
+    Console.WriteLine("PASS: storage restore and real-data dashboard aggregation / debt coverage");
 }
 finally
 {
