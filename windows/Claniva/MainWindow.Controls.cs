@@ -69,7 +69,7 @@ public sealed partial class MainWindow
         var label = Text(title, 14);
         label.Foreground = new SolidColorBrush(BrandPalette.Muted);
         content.Children.Add(label);
-        var value = Text(amount, condensed ? 18 : 22, true);
+        var value = Text(amount, condensed ? 16 : 22, true);
         value.Foreground = new SolidColorBrush(BrandPalette.Navy);
         value.TextWrapping = TextWrapping.WrapWholeWords;
         content.Children.Add(value);
