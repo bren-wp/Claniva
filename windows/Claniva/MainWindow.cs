@@ -55,7 +55,7 @@ public sealed partial class MainWindow : Window
             var minimal = Navigation.ActualWidth < 660;
             if (count != _lastLayoutColumns || _lastCompact != compact ||
                 _lastMinimal != minimal ||
-                _lastAnalyticsWide != (ContentScroller.ActualWidth >= 760))
+                _lastAnalyticsWide != (ContentScroller.ActualWidth >= 640))
                 Draw();
         };
         Navigation.SelectionChanged += Navigation_SelectionChanged;
