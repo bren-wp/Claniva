@@ -40,12 +40,13 @@ assert 'width < 340 ? 1 : width < 620 ? 2 : 4' in win
 assert 'ContentScroller.SizeChanged' in win, "Viewport changes must reflow KPI cards"
 assert '_lastAnalyticsWide != (ContentScroller.ActualWidth >= 640)' in win, "Chart/status breakpoint must redraw"
 assert '_lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 640' in views
-assert 'columnCount == 4 && ContentScroller.ActualWidth < 860' in views, "Compact KPI amount sizing required"
+assert 'var condensed = columnCount == 4;' in views, "Four-column cards must use compact spacing"
 assert 'if (condensed) box.Padding = new Thickness(8);' in views
-assert 'condensed ? 14 : 22' in controls, "EUR amounts must fit compact KPI cards"
+assert 'MaxHeight = 30' in controls, "EUR amount must scale instead of line-break"
 assert 'new Grid { ColumnSpacing = condensed ? 8 : 14, MinHeight = 64 }' in controls
 assert 'GridUnitType.Star' in controls, "KPI texts need bounded grid columns"
-assert 'TextWrapping.WrapWholeWords' in controls
+assert 'TextWrapping.NoWrap' in controls
+assert 'new Viewbox' in controls and 'StretchDirection = StretchDirection.DownOnly' in controls
 assert 'Icon = NavigationIcon(tag)' in win and 'ToolTipService.SetToolTip(item, name)' in win
 for glyph in (r'"dues" => "\uE8BF"', r'"payments" => "\uE8C7"', r'"bank" => "\uE825"'):
     assert glyph in win, f"Misleading native navigation icon: {glyph}"
