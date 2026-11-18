@@ -36,7 +36,7 @@ assert 'Navigation.SelectedItem = navigationItem' in win
 assert 'ExpandedModeThresholdWidth = 900' in win
 assert 'CompactModeThresholdWidth = 660' in win
 assert 'ContentScroller?.ActualWidth' in win, "KPI columns must follow content viewport, not full window"
-assert 'width < 440 ? 1 : width < 720 ? 2 : width < 1100 ? 3 : 5' in win
+assert 'width < 380 ? 1 : width < 680 ? 2 : width < 840 ? 3 : 4' in win
 assert 'ContentScroller.SizeChanged' in win, "Viewport changes must reflow KPI cards"
 assert 'new Grid { ColumnSpacing = 14, MinHeight = 64 }' in controls
 assert 'GridUnitType.Star' in controls, "KPI texts need bounded grid columns"
@@ -58,9 +58,14 @@ assert 'Currency.getInstance("EUR")' in android, "Android currency must explicit
 assert 'shortcuts.Children.Add(Action("Novo zaduženje", AddCharge_Click))' in views
 assert 'shortcuts.Children.Add(Action("Nova uplata", AddPayment_Click))' in views
 assert "members.Take(_visibleMembers)" in (r/"windows/Claniva/MainWindow.Members.cs").read_text(encoding="utf-8")
-for label in ["Članovi","Zaduženo","Evidentirano","Dugovanja","Preplate"]:
+for label in ["Članovi","Zaduženo","Evidentirano","Dugovanja"]:
     assert f'Metric("{label}"' in views, f"Missing Windows card {label}"
     assert f'Triple("{label}"' in dashboard, f"Missing Android card {label}"
+assert 'Metric("Preplate"' not in views and 'Triple("Preplate"' not in dashboard
+assert "ShowReferenceAnalytics(summary);" in views, "Windows analytical panel missing"
+assert "CollectionStatusCard(totals" in dashboard, "Android reference status ring missing"
+assert "MonthlyPaymentChart(allPayments" in dashboard, "Android monthly graph missing"
+assert 'ShowMembers(_store.Members().Take(8)' not in views, "Unrelated member grid on dashboard"
 assert 'maxWidth < 320.dp -> 1' in dashboard, "Typical phones should receive two KPI columns"
 assert 'val compactLabels = maxWidth < 280.dp' in android
 assert 'maxLines=1,overflow=TextOverflow.Ellipsis' in android
@@ -68,5 +73,5 @@ assert '"small:360x640:160" "normal:412x915:160"' in (r/"scripts/android_launch_
 assert "ModalBottomSheet" in android and 'moreMenu=true' in android, "The More tab must open navigation"
 assert "new SolidColorBrush(BrandPalette.White)" in controls
 assert 'MemberManagement' in android and 'LedgerManagement' in android
-print("PASS: shared navigation, 5 KPI cards, responsive shells and active controls")
+print("PASS: reference dashboard structure, 4 KPIs, live finance panels, responsive shells")
 print("NOTE: static checks do not replace actual 600-state screenshot comparisons")
