@@ -226,7 +226,7 @@ public sealed partial class MainWindow : Window
         var width = ContentScroller?.ActualWidth ?? 0;
         if (width <= 0)
             width = Math.Max(320, (Navigation?.ActualWidth ?? 0) - 236);
-        return width < 440 ? 1 : width < 720 ? 2 : width < 1100 ? 3 : 5;
+        return width < 380 ? 1 : width < 680 ? 2 : width < 840 ? 3 : 4;
     }
 
     private void NavigateTo(string tag)
