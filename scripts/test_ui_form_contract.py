@@ -70,6 +70,8 @@ assert 'ShowRecentPayments();' in windows_view
 assert 'Ledger("payment").Take(5)' in windows_view
 assert 'recentPayments.forEachIndexed' in dashboard
 assert '"Posljednje uplate"' in dashboard and '"Posljednje uplate"' in windows_view
-assert 'db.ledger("payment").take(5)' in app
+assert 'db.ledger("payment")' in app and 'paymentsForDashboard.take(5)' in app
+assert 'DashboardOverview(' in app and 'paymentsForDashboard' in app
+assert 'ShowReferenceAnalytics(summary);' in windows_view
 print("PASS: native dialog colors, 3 screenshot viewports, locale and genuine latest-payment dashboard parity")
 print("NOTE: static UI contracts are not pixel-perfect screenshot certification")
