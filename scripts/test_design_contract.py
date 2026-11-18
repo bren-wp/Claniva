@@ -41,9 +41,9 @@ assert 'ContentScroller.SizeChanged' in win, "Viewport changes must reflow KPI c
 assert '_lastAnalyticsWide != (ContentScroller.ActualWidth >= 640)' in win, "Chart/status breakpoint must redraw"
 assert '_lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 640' in views
 assert 'columnCount == 4 && ContentScroller.ActualWidth < 860' in views, "Compact KPI amount sizing required"
-assert 'if (condensed) box.Padding = new Thickness(10);' in views
-assert 'condensed ? 16 : 22' in controls, "EUR amounts must fit compact KPI cards"
-assert 'new Grid { ColumnSpacing = 14, MinHeight = 64 }' in controls
+assert 'if (condensed) box.Padding = new Thickness(8);' in views
+assert 'condensed ? 14 : 22' in controls, "EUR amounts must fit compact KPI cards"
+assert 'new Grid { ColumnSpacing = condensed ? 8 : 14, MinHeight = 64 }' in controls
 assert 'GridUnitType.Star' in controls, "KPI texts need bounded grid columns"
 assert 'TextWrapping.WrapWholeWords' in controls
 assert 'Icon = NavigationIcon(tag)' in win and 'ToolTipService.SetToolTip(item, name)' in win
