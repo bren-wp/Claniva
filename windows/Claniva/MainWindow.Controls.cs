@@ -49,7 +49,7 @@ public sealed partial class MainWindow
         return b;
     }
 
-    private static Grid Metric(string title, string amount, Color accent)
+    private static Grid Metric(string title, string amount, Color accent, bool condensed = false)
     {
         // A horizontal StackPanel measures TextBlocks with unbounded width.
         // A two-column Grid constrains long EUR amounts to the actual card.
@@ -69,7 +69,7 @@ public sealed partial class MainWindow
         var label = Text(title, 14);
         label.Foreground = new SolidColorBrush(BrandPalette.Muted);
         content.Children.Add(label);
-        var value = Text(amount, 22, true);
+        var value = Text(amount, condensed ? 18 : 22, true);
         value.Foreground = new SolidColorBrush(BrandPalette.Navy);
         value.TextWrapping = TextWrapping.WrapWholeWords;
         content.Children.Add(value);
