@@ -84,3 +84,30 @@ Niti jedna od 600 kombinacija ne smije dobiti oznaku 1:1 bez odobrenog
 referentnog PNG-a istog OS-a/DPI-ja, kontroliranih fontova i uspješne
 usporedbe svakog piksela. Pojedini moduli iz manifesta još su planirani,
 a ne implementirani, i moraju ostati označeni kao `unverified`.
+
+## Strukturna korekcija prema postojećim konceptima — 18. 11. 2026.
+
+Pregledane su **stvarne** CI snimke iz izdanja `v0.2.119-dev`
+(Windows Full/DEMO i Android telefon 360/412 dp te tablet 800 dp).
+Nadzorna ploča bila je značajno različita od `branding/preview-windows.svg`
+i `branding/preview-android.svg`: pet primarnih KPI kartica,
+nedostajući statusni krug i graf uplata, nepovezan popis članova na Windows
+početnoj stranici. Nije dostatna promjena boja ili fontova.
+
+Izmjene ove iteracije:
+- četiri glavne KPI kartice (Članovi, Zaduženo, Evidentirano, Dugovanja);
+- kružni **Status članarina** s realnim omjerom pokrivenih zaduženja
+  pojedinih članova; preplate su zasebno prikazane;
+- dinamički prikaz **Uplate po mjesecima** na temelju stvarnih
+  evidentiranih uplata tijekom posljednjih šest mjeseci;
+- ujednačen, responzivan raspored Windows i Android panela, a ne
+  fiksni konceptualni SVG; bez lažnih postotaka i izmišljenih uplata;
+- preostali financijski moduli i dijalozi i dalje zahtijevaju stvarnu
+  funkcionalnu te odobrenu vizualnu 1:1 verifikaciju.
+
+**Granica tvrdnje:** konceptualni SVG nije odobren pixel-perfect PNG.
+Snimke se razlikuju prema platformi, DPI-ju, fontu, OS-u i datasetu.
+Dok vlasnik dizajna ne odobri točne referentne rastere, sva stanja ostaju
+`unverified` u `qa/visual-manifest.json`. Dodavanje pravog grafikona
+i kružnog prikaza jest funkcionalna i strukturna ispravka, ali nije
+dokaz nulte RGB razlike na svim zaslonima.

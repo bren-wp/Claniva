@@ -16,6 +16,7 @@ public sealed partial class MainWindow
         PageContent.Children.Clear();
         _lastCompact = Navigation.ActualWidth < 740;
         _lastMinimal = Navigation.ActualWidth < 660;
+        _lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 640;
         // In Minimal mode the hamburger overlays the content header.
         // Reserve its 48-pixel command region instead of letting it cover DEMO.
         PageContent.Padding = _lastMinimal == true
@@ -48,27 +49,27 @@ public sealed partial class MainWindow
             _lastLayoutColumns = columnCount;
             for (int i = 0; i < columnCount; i++)
                 metrics.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            var rowCount = (5 + columnCount - 1) / columnCount;
+            var rowCount = (4 + columnCount - 1) / columnCount;
             for (int i = 0; i < rowCount; i++)
                 metrics.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            var condensed = columnCount == 4;
             var cards = new[]
             {
-                Metric("Članovi", summary.Members.ToString(), BrandPalette.Blue),
-                Metric("Zaduženo", LocalStore.Money(summary.ChargedCents), BrandPalette.Gold),
-                Metric("Evidentirano", LocalStore.Money(summary.PaidCents), BrandPalette.Teal),
-                Metric("Dugovanja", LocalStore.Money(summary.OutstandingCents), BrandPalette.Danger),
-                Metric("Preplate", LocalStore.Money(summary.CreditCents), BrandPalette.Blue)
+                Metric("Članovi", summary.Members.ToString(), BrandPalette.Blue, condensed),
+                Metric("Zaduženo", LocalStore.Money(summary.ChargedCents), BrandPalette.Gold, condensed),
+                Metric("Evidentirano", LocalStore.Money(summary.PaidCents), BrandPalette.Teal, condensed),
+                Metric("Dugovanja", LocalStore.Money(summary.OutstandingCents), BrandPalette.Danger, condensed)
             };
             for (int i = 0; i < cards.Length; i++)
             {
                 var box = Panel(cards[i]);
+                if (condensed) box.Padding = new Thickness(8);
                 Grid.SetColumn(box, i % columnCount);
                 Grid.SetRow(box, i / columnCount);
                 metrics.Children.Add(box);
             }
             PageContent.Children.Add(metrics);
-            PageContent.Children.Add(Text(
-                "Evidentirane uplate nisu automatski bankovno potvrđene. Dugovi i preplate računaju se po pojedinom članu.", 14));
+            ShowReferenceAnalytics(summary);
         }
 
         switch (_module)
@@ -85,9 +86,8 @@ public sealed partial class MainWindow
                 var quick = new StackPanel { Spacing = 12 };
                 quick.Children.Add(Text("Brze radnje", 18, true));
                 quick.Children.Add(shortcuts);
-                PageContent.Children.Add(Panel(quick));
-                ShowMembers(_store.Members().Take(8).ToList(), false);
                 ShowRecentPayments();
+                PageContent.Children.Add(Panel(quick));
                 break;
             case "members":
                 PageContent.Children.Add(Action("+ Novi član", AddMember_Click));

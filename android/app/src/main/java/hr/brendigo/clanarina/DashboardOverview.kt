@@ -18,7 +18,7 @@ import hr.brendigo.clanarina.ui.Brand
 @Composable
 internal fun DashboardOverview(
     totals: Totals, hasMembers: Boolean, recentPayments: List<LedgerEntry>,
-    openPage: (String) -> Unit
+    allPayments: List<LedgerEntry>, openPage: (String) -> Unit
 ) {
     Column(
         Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -28,8 +28,7 @@ internal fun DashboardOverview(
             Triple("Članovi",totals.members.toString(),Brand.Blue),
             Triple("Zaduženo",euro(totals.chargedCents),Brand.Gold),
             Triple("Evidentirano",euro(totals.paidCents),Brand.Teal),
-            Triple("Dugovanja",euro(totals.outstandingCents),Brand.Danger),
-            Triple("Preplate",euro(totals.creditCents),Brand.Blue)
+            Triple("Dugovanja",euro(totals.outstandingCents),Brand.Danger)
         )
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             val columns=when {
@@ -49,6 +48,19 @@ internal fun DashboardOverview(
             }
         }
 
+        // Like the supplied mobile reference: four primary KPI cards,
+        // followed by the collection-status ring and quick actions.
+        // Tablets also show the six-month line chart beside status.
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            if (maxWidth >= 700.dp) {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    MonthlyPaymentChart(allPayments, Modifier.weight(1.4f))
+                    CollectionStatusCard(totals, Modifier.weight(1f))
+                }
+            } else {
+                CollectionStatusCard(totals, Modifier.fillMaxWidth())
+            }
+        }
         Text(
             "Evidentirane uplate nisu automatski bankovno potvrđene.",
             color=Brand.Muted,style=MaterialTheme.typography.bodySmall
@@ -131,6 +143,11 @@ internal fun DashboardOverview(
                     }
                 }
             }
+        }
+        // On phones the reference puts status before shortcuts; keep the
+        // historical chart further down so the initial viewport stays useful.
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            if (maxWidth < 700.dp) MonthlyPaymentChart(allPayments)
         }
         Text("Podaci ostaju na ovom uređaju.",color=Brand.Muted,
             style=MaterialTheme.typography.bodySmall)

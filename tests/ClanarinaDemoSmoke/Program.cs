@@ -55,6 +55,8 @@ try
         throw new Exception("Demo must have 3 charged periods per member");
     if (Scalar("SELECT COUNT(*) FROM payments") < 20)
         throw new Exception("Demo payments are missing");
+    if (Scalar("SELECT COUNT(DISTINCT substr(created_at,1,7)) FROM payments") < 4)
+        throw new Exception("Demo payment dates must cover distinct chart months");
     if (Scalar("SELECT COUNT(*) FROM members WHERE name NOT LIKE 'Demo član %'") != 0)
         throw new Exception("Demo name is not clearly fictional");
     if (Scalar("SELECT COUNT(*) FROM members WHERE email NOT LIKE '%@example.invalid'") != 0)

@@ -58,3 +58,17 @@ They are an anti-data-loss safeguard, not a completed privacy or production
 security measure. Do not upload them publicly. A verified encryption key
 management model, encrypted backup format, Android-side pre-upgrade recovery,
 production restore UI and real-device tests remain outstanding.
+
+## Analitika nadzorne ploče — 18. 11. 2026.
+
+Prikaz `Status članarina` ne predstavlja bankovno potvrđene uplate
+niti knjigovodstvenu alokaciju. Omjer se izračunava iz ukupno zaduženog
+iznosa umanjenog za zbroj pozitivnih dugova pojedinačnih članova.
+Preplate drugih članova ne prikrivaju neplaćena zaduženja.
+Ako nema zaduženja, omjer se prikazuje kao 0 % uz posebno upozorenje.
+
+Linijski graf koristi samo lokalno evidentirane uplate (šest posljednjih
+kalendarskih mjeseci, uključujući aktualni), bez pozivanja interneta
+ili generiranja izmišljenih financijskih podataka. Svim dostupnim
+agregatima treba ponovno provjeriti ponašanje na velikim evidencijama
+prije produkcije; osnovni lokalni SQLite i backup ostaju nešifrirani.

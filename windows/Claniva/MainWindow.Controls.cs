@@ -49,11 +49,11 @@ public sealed partial class MainWindow
         return b;
     }
 
-    private static Grid Metric(string title, string amount, Color accent)
+    private static Grid Metric(string title, string amount, Color accent, bool condensed = false)
     {
         // A horizontal StackPanel measures TextBlocks with unbounded width.
         // A two-column Grid constrains long EUR amounts to the actual card.
-        var card = new Grid { ColumnSpacing = 14, MinHeight = 64 };
+        var card = new Grid { ColumnSpacing = condensed ? 8 : 14, MinHeight = 64 };
         card.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5) });
         card.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         var accentBar = new Border
@@ -71,8 +71,17 @@ public sealed partial class MainWindow
         content.Children.Add(label);
         var value = Text(amount, 22, true);
         value.Foreground = new SolidColorBrush(BrandPalette.Navy);
-        value.TextWrapping = TextWrapping.WrapWholeWords;
-        content.Children.Add(value);
+        value.TextWrapping = TextWrapping.NoWrap;
+        // Keep the full financial amount and € on one line; scale down only
+        // when the card's real width is smaller than the natural text width.
+        content.Children.Add(new Viewbox
+        {
+            Child = value,
+            Stretch = Stretch.Uniform,
+            StretchDirection = StretchDirection.DownOnly,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            MaxHeight = 30
+        });
         Grid.SetColumn(content, 1);
         card.Children.Add(content);
         return card;

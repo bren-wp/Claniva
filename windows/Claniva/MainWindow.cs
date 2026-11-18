@@ -21,6 +21,7 @@ public sealed partial class MainWindow : Window
     private int _lastLayoutColumns = -1;
     private bool? _lastCompact;
     private bool? _lastMinimal;
+    private bool? _lastAnalyticsWide;
     private int _visibleMembers = 30;
 
     public MainWindow()
@@ -42,7 +43,8 @@ public sealed partial class MainWindow : Window
         ContentScroller.SizeChanged += (_, _) =>
         {
             if (!_ready || (_module != "dashboard" && _module != "reports")) return;
-            if (DashboardColumns() != _lastLayoutColumns)
+            if (DashboardColumns() != _lastLayoutColumns ||
+                _lastAnalyticsWide != (ContentScroller.ActualWidth >= 640))
                 Draw();
         };
         Navigation.SizeChanged += (_, _) =>
@@ -51,7 +53,9 @@ public sealed partial class MainWindow : Window
             var count = DashboardColumns();
             var compact = Navigation.ActualWidth < 740;
             var minimal = Navigation.ActualWidth < 660;
-            if (count != _lastLayoutColumns || _lastCompact != compact || _lastMinimal != minimal)
+            if (count != _lastLayoutColumns || _lastCompact != compact ||
+                _lastMinimal != minimal ||
+                _lastAnalyticsWide != (ContentScroller.ActualWidth >= 640))
                 Draw();
         };
         Navigation.SelectionChanged += Navigation_SelectionChanged;
@@ -226,7 +230,7 @@ public sealed partial class MainWindow : Window
         var width = ContentScroller?.ActualWidth ?? 0;
         if (width <= 0)
             width = Math.Max(320, (Navigation?.ActualWidth ?? 0) - 236);
-        return width < 440 ? 1 : width < 720 ? 2 : width < 1100 ? 3 : 5;
+        return width < 340 ? 1 : width < 620 ? 2 : 4;
     }
 
     private void NavigateTo(string tag)
