@@ -63,7 +63,7 @@ public sealed partial class MainWindow
             for (int i = 0; i < cards.Length; i++)
             {
                 var box = Panel(cards[i]);
-                if (condensed) box.Padding = new Thickness(10);
+                if (condensed) box.Padding = new Thickness(8);
                 Grid.SetColumn(box, i % columnCount);
                 Grid.SetRow(box, i / columnCount);
                 metrics.Children.Add(box);
