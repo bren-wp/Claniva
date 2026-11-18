@@ -53,7 +53,7 @@ public sealed partial class MainWindow
     {
         // A horizontal StackPanel measures TextBlocks with unbounded width.
         // A two-column Grid constrains long EUR amounts to the actual card.
-        var card = new Grid { ColumnSpacing = 14, MinHeight = 64 };
+        var card = new Grid { ColumnSpacing = condensed ? 8 : 14, MinHeight = 64 };
         card.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5) });
         card.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         var accentBar = new Border
@@ -69,7 +69,7 @@ public sealed partial class MainWindow
         var label = Text(title, 14);
         label.Foreground = new SolidColorBrush(BrandPalette.Muted);
         content.Children.Add(label);
-        var value = Text(amount, condensed ? 16 : 22, true);
+        var value = Text(amount, condensed ? 14 : 22, true);
         value.Foreground = new SolidColorBrush(BrandPalette.Navy);
         value.TextWrapping = TextWrapping.WrapWholeWords;
         content.Children.Add(value);
