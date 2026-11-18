@@ -17,7 +17,7 @@ public sealed partial class MainWindow
         var history = DashboardAnalytics.LastSixMonths(payments, DateTime.Now);
         var chart = Panel(BuildMonthlyChart(history));
         var status = Panel(BuildCollectionStatus(summary));
-        var wide = (ContentScroller?.ActualWidth ?? 0) >= 760;
+        var wide = (ContentScroller?.ActualWidth ?? 0) >= 640;
         var row = new Grid { ColumnSpacing = 14, RowSpacing = 14 };
         row.ColumnDefinitions.Add(new ColumnDefinition
         {
