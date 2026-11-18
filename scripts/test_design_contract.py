@@ -38,6 +38,8 @@ assert 'CompactModeThresholdWidth = 660' in win
 assert 'ContentScroller?.ActualWidth' in win, "KPI columns must follow content viewport, not full window"
 assert 'width < 380 ? 1 : width < 680 ? 2 : width < 840 ? 3 : 4' in win
 assert 'ContentScroller.SizeChanged' in win, "Viewport changes must reflow KPI cards"
+assert '_lastAnalyticsWide != (ContentScroller.ActualWidth >= 760)' in win, "Chart/status breakpoint must redraw"
+assert '_lastAnalyticsWide = (ContentScroller?.ActualWidth ?? 0) >= 760' in views
 assert 'new Grid { ColumnSpacing = 14, MinHeight = 64 }' in controls
 assert 'GridUnitType.Star' in controls, "KPI texts need bounded grid columns"
 assert 'TextWrapping.WrapWholeWords' in controls
