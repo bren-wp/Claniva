@@ -141,6 +141,8 @@ internal fun euro(cents:Long) = euros.format(BigDecimal.valueOf(cents,2))
                     StatCard("Evidentirano",euro(totals.paidCents),Brand.Teal)
                     StatCard("Dugovanja",euro(totals.outstandingCents),Brand.Danger)
                     StatCard("Preplate",euro(totals.creditCents),Brand.Blue)
+                    CollectionStatusCard(totals)
+                    MonthlyPaymentChart(paymentsForDashboard)
                     Text(
                         "Evidentirane uplate nisu automatski bankovno potvrđene. Dugovi i preplate računaju se po pojedinom članu.",
                         color = Brand.Muted,
