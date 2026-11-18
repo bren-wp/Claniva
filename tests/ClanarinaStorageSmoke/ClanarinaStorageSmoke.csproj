@@ -13,5 +13,6 @@
     <Compile Include="../../windows/Claniva/Data/LocalStore.Ledger.cs" Link="LocalStore.Ledger.cs" />
     <Compile Include="../../windows/Claniva/Data/LocalStore.Money.cs" Link="LocalStore.Money.cs" />
     <Compile Include="../../windows/Claniva/Data/Models.cs" Link="Models.cs" />
+    <Compile Include="../../windows/Claniva/Data/DashboardAnalytics.cs" Link="DashboardAnalytics.cs" />
   </ItemGroup>
 </Project>
