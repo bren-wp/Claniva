@@ -1,5 +1,6 @@
 #if DEMO_BUILD
 using Microsoft.Data.Sqlite;
+using System.Globalization;
 
 namespace Claniva.Data;
 
@@ -88,14 +89,20 @@ internal static class DemoData
                 using var payment = db.CreateCommand();
                 payment.Transaction = tx;
                 payment.CommandText = """
-                    INSERT INTO payments(id,member_id,amount_cents,note,reference)
-                    VALUES($id,$member,$amount,$note,$reference)
+                    INSERT INTO payments(id,member_id,amount_cents,note,reference,created_at)
+                    VALUES($id,$member,$amount,$note,$reference,$created)
                     """;
                 payment.Parameters.AddWithValue("$id", $"demo-payment-{i:000}-{p:00}");
                 payment.Parameters.AddWithValue("$member", id);
                 payment.Parameters.AddWithValue("$amount", amount);
                 payment.Parameters.AddWithValue("$note", "Izmišljena demo uplata");
                 payment.Parameters.AddWithValue("$reference", $"DEMO-2026-{i:000}-{p:00}");
+                // Fictional sample history is spread across the preceding six
+                // months so the real dashboard chart has meaningful demo data.
+                // Existing seeded demo installations are never rewritten.
+                var demoDate = DateTime.UtcNow.AddMonths(-((i + p) % 6));
+                payment.Parameters.AddWithValue("$created",
+                    demoDate.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
                 payment.ExecuteNonQuery();
             }
         }
