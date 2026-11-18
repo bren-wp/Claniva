@@ -69,10 +69,19 @@ public sealed partial class MainWindow
         var label = Text(title, 14);
         label.Foreground = new SolidColorBrush(BrandPalette.Muted);
         content.Children.Add(label);
-        var value = Text(amount, condensed ? 14 : 22, true);
+        var value = Text(amount, 22, true);
         value.Foreground = new SolidColorBrush(BrandPalette.Navy);
-        value.TextWrapping = TextWrapping.WrapWholeWords;
-        content.Children.Add(value);
+        value.TextWrapping = TextWrapping.NoWrap;
+        // Keep the full financial amount and € on one line; scale down only
+        // when the card's real width is smaller than the natural text width.
+        content.Children.Add(new Viewbox
+        {
+            Child = value,
+            Stretch = Stretch.Uniform,
+            StretchDirection = StretchDirection.DownOnly,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            MaxHeight = 30
+        });
         Grid.SetColumn(content, 1);
         card.Children.Add(content);
         return card;
